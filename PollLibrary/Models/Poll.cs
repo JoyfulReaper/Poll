@@ -40,6 +40,7 @@ namespace PollLibrary.Models
         public long Id { get; set; }
 
         [Required]
+        [MaxLength(100)]
         public String Name { get; set; }
 
         [Required]

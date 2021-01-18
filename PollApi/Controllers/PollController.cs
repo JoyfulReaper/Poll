@@ -16,11 +16,13 @@ namespace PollApi.Controllers
     {
         private readonly IPollData pollData;
         private readonly IUserData userData;
+        private readonly IContextData contextData;
 
-        public PollController(IPollData pollData, IUserData userData)
+        public PollController(IPollData pollData, IUserData userData, IContextData contextData)
         {
             this.pollData = pollData;
             this.userData = userData;
+            this.contextData = contextData;
         }
 
         // GET: api/<PollController>
@@ -48,8 +50,15 @@ namespace PollApi.Controllers
 
         // POST api/<PollController>
         [HttpPost]
-        public async Task Post([FromBody] PollDTO poll)
+        public async Task<ActionResult<PollDTO>> Post([FromBody] PollDTO poll)
         {
+            var context = await contextData.GetContext(poll.Context.Name);
+
+            if(context == null)
+            {
+                return NotFound(context);
+            }
+
             var options = new List<Option>();
             foreach (var option in poll.Options)
             {
@@ -77,11 +86,13 @@ namespace PollApi.Controllers
 
             var newPoll = new Poll();
             newPoll.Name = poll.Name;
-            newPoll.Context = new Context { Name = poll.Context.Name };
+            newPoll.Context = context;
             newPoll.Options = options;
             newPoll.Votes = votes;
 
             await pollData.AddPoll(newPoll);
+
+            return CreatedAtAction(nameof(Get), PollToDTO(newPoll));
         }
 
         // PUT api/<PollController>/5

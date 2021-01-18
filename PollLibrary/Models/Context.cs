@@ -23,6 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -30,12 +31,14 @@ using System.Text;
 
 namespace PollLibrary.Models
 {
+    [Index(nameof(Name), IsUnique = true)]
     public partial class Context
     {
         [Key]
         public long Id { get; set; }
 
         [Required]
+        [MaxLength(100)]
         public string Name { get; set; }
     }
 }
