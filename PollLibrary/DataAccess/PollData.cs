@@ -27,16 +27,20 @@ using Microsoft.EntityFrameworkCore;
 using PollLibrary.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System;
+using System.Linq;
 
 namespace PollLibrary.DataAccess
 {
     public class PollData : IPollData
     {
         private readonly PollContext dbContext;
+        private readonly IContextData contextData;
 
-        public PollData(PollContext dbContext)
+        public PollData(PollContext dbContext, IContextData contextData)
         {
             this.dbContext = dbContext;
+            this.contextData = contextData;
         }
 
         public async Task AddPoll(Poll poll)
@@ -85,6 +89,22 @@ namespace PollLibrary.DataAccess
                 .Include(x => x.Options)
                 .Include(x => x.Votes)
                 .SingleOrDefaultAsync(x => x.Name == name);
+        }
+
+        public async Task<List<Poll>> GetPollsByContext(string context)
+        {
+            var ctx = await contextData.GetContext(context);
+
+            if(ctx == null)
+            {
+                throw new ArgumentException("Context is not valid", nameof(context));
+            }
+
+            return await dbContext.Polls
+                .Include(x => x.Options)
+                .Include(x => x.Votes)
+                .Where(x => x.Context == ctx)
+                .ToListAsync();
         }
     }
 }
