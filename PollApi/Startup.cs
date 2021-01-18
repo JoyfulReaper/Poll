@@ -1,18 +1,41 @@
+/*
+MIT License
+
+Copyright(c) 2021 Kyle Givler
+https://github.com/JoyfulReaper
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
+using PollApi.Helpers;
+using PollApi.Models;
 using PollLibrary.DataAccess;
-using System;
+using PollLibrary.Models;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace PollApi
 {
@@ -21,6 +44,7 @@ namespace PollApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            RegisterMappings();
         }
 
         public IConfiguration Configuration { get; }
@@ -64,6 +88,59 @@ namespace PollApi
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+        }
+
+        private void RegisterMappings()
+        {
+            var mapper = Mapper.Instance;
+
+            mapper.Register<Context, ContextDTO>(x => new ContextDTO()
+            {
+                Name = x.Name
+            });
+
+            mapper.Register<Option, OptionDTO>(x => new OptionDTO()
+            {
+                Name = x?.Name
+            });
+
+            mapper.Register<Poll, PollDTO>(x =>
+            {
+                List<OptionDTO> opts = new List<OptionDTO>();
+                List<VoteDTO> vts = new List<VoteDTO>();
+
+                if (x.Options != null)
+                {
+                    x.Options.ToList().ForEach(x => opts.Add(mapper.Map<Option, OptionDTO>(x)));
+                }
+                if (x.Votes != null)
+                {
+                    x.Votes.ToList().ForEach(x => vts.Add(mapper.Map<Vote, VoteDTO>(x)));
+                }
+
+                return new PollDTO()
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Options = opts,
+                    Votes = vts,
+                    Context = mapper.Map<Context, ContextDTO>(x.Context)
+                };
+            });
+
+            mapper.Register<User, UserDTO>(x =>
+            {
+                return new UserDTO()
+                {
+                    UserName = x?.UserName
+                };
+            });
+
+            mapper.Register<Vote, VoteDTO>(x => new VoteDTO()
+            {
+                User = mapper.Map<User, UserDTO>(x.User),
+                Option = mapper.Map<Option, OptionDTO>(x.Option),
             });
         }
     }
