@@ -52,22 +52,38 @@ namespace PollApi.Controllers
 
         // GET: api/<PollController>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PollDTO>>> Get()
+        public async Task<ActionResult<IEnumerable<PollDTO>>> Get(string context)
         {
-            var polls = await pollData.GetAllPolls();
+            if(!await contextData.IsValidContext(context))
+            {
+                return Unauthorized();
+            }
+
+            //var polls = await pollData.GetAllPolls();
+            var polls = await pollData.GetPollsByContext(context);
 
             return polls.Select(x => mapper.Map<Poll, PollDTO>(x)).ToList();
         }
 
         // GET api/<PollController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<PollDTO>> Get(int id)
+        public async Task<ActionResult<PollDTO>> Get(int id, string context)
         {
+            if (!await contextData.IsValidContext(context))
+            {
+                return Unauthorized();
+            }
+
             var poll = await pollData.GetPollById(id);
 
-            if(poll == null)
+            if (poll == null)
             {
                 return NotFound();
+            }
+
+            if (poll.Context.Name != context)
+            {
+                return Unauthorized();
             }
 
             return mapper.Map<Poll, PollDTO>(poll);
@@ -119,7 +135,7 @@ namespace PollApi.Controllers
 
             await pollData.AddPoll(newPoll);
 
-            return CreatedAtAction(nameof(Get), mapper.Map< Poll, PollDTO>(newPoll));
+            return CreatedAtAction(nameof(Get), mapper.Map<Poll, PollDTO>(newPoll));
         }
 
         // PUT api/<PollController>/5
@@ -130,8 +146,22 @@ namespace PollApi.Controllers
 
         // DELETE api/<PollController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public async Task<IActionResult> Delete(int id, string context)
         {
+            if (!await contextData.IsValidContext(context))
+            {
+                return Unauthorized();
+            }
+
+            var poll = await pollData.GetPollById(id);
+            if (poll == null)
+            {
+                return NotFound();
+            }
+
+            await pollData.RemovePoll(poll);
+
+            return AcceptedAtAction("Delete");
         }
     }
 }
