@@ -27,27 +27,30 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace PollLibrary.Models
 {
     [Index(nameof(Name), IsUnique=true)]
-    public class Poll
+    public partial class Poll
     {
         [Key]
         public long Id { get; set; }
 
-        [Required]
+        //[Required]
         [MaxLength(100)]
         public string Name { get; set; }
 
-        [Required]
-        public List<Option> Options { get; set; }
+        //[Required]
+        public ICollection<Option> Options { get; set; }
 
-        public List<Vote> Votes { get; set; }
+        public ICollection<Vote> Votes { get; set; }
 
-        [Required]
-        public Context Context;
+        //[Required]
+        public Context Context { get; set; }
+        [ForeignKey(nameof(ContextId))]
+        public long ContextId { get; set; }
     }
 }

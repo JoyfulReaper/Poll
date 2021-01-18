@@ -24,11 +24,11 @@ namespace QuickTest
             {
                 PollData data = new PollData(context);
 
-                //await LibAdd(data);
+                await LibAdd(data);
                 //await LibRemove(data);
 
-                var test = await data.GetAllPolls();
-                var test2 = await data.GetPollById(1);
+                //var test = await data.GetAllPolls();
+                //var test2 = await data.GetPollById(1);
 
                 Console.WriteLine("Hello World!");
             }
@@ -38,9 +38,9 @@ namespace QuickTest
         {
             Poll newPoll = new Poll()
             {
-                Name = "Another Test Poll",
-                //Options = GetDemoOptions(),
-                //Votes = GetDemoVotes(),
+                Name = "Another Test Poll2",
+                Options = GetDemoOptions(),
+                Votes = GetDemoVotes(),
                 Context = new Context { Name = "Testing" }
             };
 

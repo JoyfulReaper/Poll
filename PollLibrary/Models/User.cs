@@ -33,12 +33,12 @@ using System.Threading.Tasks;
 namespace PollLibrary.Models
 {
     [Index(nameof(UserName), IsUnique =true)]
-    public class User
+    public partial class User
     {
         [Key]
         public long Id { get; set; }
 
-        [Required]
+        //[Required]
         [MaxLength(100)]
         public String UserName { get; set; }
     }

@@ -26,24 +26,30 @@ SOFTWARE.
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace PollLibrary.Models
 {
-    public class Vote
+    public partial class Vote
     {
         [Key]
         public long Id { get; set; }
 
-        [Required]
+        //[Required]
+        [ForeignKey(nameof(UserId))]
         public long UserId { get; set; }
-
-        [Required]
-        public long OptionId { get; set; }
-
-        public Poll Poll;
         public User User { get; set; }
+
+        //[Required]
+        [ForeignKey(nameof(OptionId))]
+        public long OptionId { get; set; }
         public Option Option { get; set; }
+
+        //[Required]
+        [ForeignKey(nameof(PollId))]
+        public long PollId { get; set; }
+        public Poll Poll { get; set; }
     }
 }
