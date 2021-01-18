@@ -24,7 +24,7 @@ SOFTWARE.
 */
 
 using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PollLibrary.Models
 {
@@ -38,5 +38,8 @@ namespace PollLibrary.Models
 
         [Required]
         public Option Option { get; set; }
+
+        [ForeignKey("PollId")]
+        public long PollId { get; set; }
     }
 }

@@ -80,7 +80,7 @@ namespace PollLibrary.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<long>(type: "bigint", nullable: true),
                     OptionId = table.Column<long>(type: "bigint", nullable: true),
-                    PollId = table.Column<long>(type: "bigint", nullable: true)
+                    PollId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -96,7 +96,7 @@ namespace PollLibrary.Migrations
                         column: x => x.PollId,
                         principalTable: "Polls",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Votes_Users_UserId",
                         column: x => x.UserId,

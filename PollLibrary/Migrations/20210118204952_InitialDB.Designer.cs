@@ -10,7 +10,7 @@ using PollLibrary.DataAccess;
 namespace PollLibrary.Migrations
 {
     [DbContext(typeof(PollContext))]
-    [Migration("20210118171858_InitialDB")]
+    [Migration("20210118204952_InitialDB")]
     partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -118,7 +118,7 @@ namespace PollLibrary.Migrations
                     b.Property<long?>("OptionId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("PollId")
+                    b.Property<long>("PollId")
                         .HasColumnType("bigint");
 
                     b.Property<long?>("UserId")
@@ -159,7 +159,9 @@ namespace PollLibrary.Migrations
 
                     b.HasOne("PollLibrary.Models.Poll", null)
                         .WithMany("Votes")
-                        .HasForeignKey("PollId");
+                        .HasForeignKey("PollId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("PollLibrary.Models.User", "User")
                         .WithMany()
