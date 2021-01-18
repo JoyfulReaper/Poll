@@ -10,8 +10,8 @@ using PollLibrary.DataAccess;
 namespace PollLibrary.Migrations
 {
     [DbContext(typeof(PollContext))]
-    [Migration("20210118051945_InitialDb")]
-    partial class InitialDb
+    [Migration("20210118171858_InitialDB")]
+    partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

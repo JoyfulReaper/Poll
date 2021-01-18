@@ -31,7 +31,7 @@ namespace PollLibrary.DataAccess
     public interface IUserData
     {
         Task AddUser(string userName);
-        Task<bool> isValid(string userName);
+        Task<bool> IsValid(string userName);
         Task RemoveUser(string userName);
         Task<User> GetUser(string userName);
     }

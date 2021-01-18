@@ -25,10 +25,6 @@ SOFTWARE.
 
 using Microsoft.EntityFrameworkCore;
 using PollLibrary.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace PollLibrary.DataAccess
 {
@@ -53,6 +49,14 @@ namespace PollLibrary.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Poll>()
+                .HasMany(x => x.Options)
+                .WithOne();
+
+            modelBuilder.Entity<Poll>()
+                .HasMany(x => x.Votes)
+                .WithOne();
+
         }
     }
 }

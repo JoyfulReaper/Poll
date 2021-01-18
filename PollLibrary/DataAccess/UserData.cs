@@ -26,9 +26,6 @@ SOFTWARE.
 using Microsoft.EntityFrameworkCore;
 using PollLibrary.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PollLibrary.DataAccess
@@ -53,7 +50,7 @@ namespace PollLibrary.DataAccess
             return await dbContext.Users.SingleOrDefaultAsync(x => x.UserName == userName);
         }
 
-        public async Task<bool> isValid(string userName)
+        public async Task<bool> IsValid(string userName)
         {
             var user = await GetUser(userName);
 
