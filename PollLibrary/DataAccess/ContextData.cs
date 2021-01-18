@@ -42,5 +42,17 @@ namespace PollLibrary.DataAccess
         {
             return await dbContext.Context.SingleOrDefaultAsync(x => x.Name == name);
         }
+
+        public async Task<bool> IsValidContext(string name)
+        {
+            var ctx = await GetContext(name);
+
+            if (ctx == null)
+            {
+                return false;
+            }
+
+            return true;
+        }
     }
 }
