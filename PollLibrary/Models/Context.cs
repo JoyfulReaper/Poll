@@ -32,10 +32,10 @@ namespace PollLibrary.Models
 {
     public partial class Context
     {
+        [Key]
         public long Id { get; set; }
 
-        //[Required]
-        [MaxLength(50)]
+        [Required]
         public string Name { get; set; }
     }
 }

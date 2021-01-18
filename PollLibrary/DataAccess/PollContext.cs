@@ -53,61 +53,6 @@ namespace PollLibrary.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Poll>()
-                .HasMany(o => o.Options)
-                .WithOne(p => p.Poll)
-                .HasForeignKey(f => f.PollId);
-
-            modelBuilder.Entity<Poll>()
-                .HasMany(v => v.Votes)
-                .WithOne(p => p.Poll)
-                .HasForeignKey(f => f.PollId);
-
-            modelBuilder.Entity<Poll>()
-                .HasOne(c => c.Context)
-                .WithMany()
-                .HasForeignKey(f => f.ContextId);
-
-            modelBuilder.Entity<Option>()
-                .HasOne(p => p.Poll)
-                .WithMany(o => Options)
-                .HasForeignKey(f => f.PollId);
-
-            modelBuilder.Entity<Vote>()
-                .HasOne(u => u.User)
-                .WithMany()
-                .HasForeignKey(f => f.UserId);
-
-            modelBuilder.Entity<Vote>()
-                .HasOne(p => p.Poll)
-                .WithMany(v => v.Votes)
-                .HasForeignKey(f => f.PollId);
-
-            modelBuilder.Entity<Vote>()
-                .HasOne(o => o.Option)
-                .WithMany()
-                .HasForeignKey(f => f.OptionId);
-
-
-            //modelBuilder.Entity<Vote>()
-            //    .HasOne(p => p.Poll)
-            //    .WithMany(v => v.Votes)
-            //    .HasForeignKey(f => f.PollId)
-            //    .OnDelete(DeleteBehavior.Cascade);
-
-            //modelBuilder.Entity<Option>()
-            //    .HasOne(p => p.Poll)
-            //    .WithMany(o => o.Options)
-            //    .HasForeignKey(f => f.PollId)
-            //    .OnDelete(DeleteBehavior.Cascade);
-
-            //modelBuilder.Entity<Vote>()
-            //    .HasOne(x => x.User)
-            //    .WithMany();
-
-            //modelBuilder.Entity<Vote>()
-            //    .HasOne(x => x.Option)
-            //    .WithMany();
         }
     }
 }

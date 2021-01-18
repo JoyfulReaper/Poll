@@ -7,6 +7,6 @@ namespace PollApi.Models
 {
     public class OptionDTO
     {
-        public string OptionValue { get; set; }
+        public string Name { get; set; }
     }
 }

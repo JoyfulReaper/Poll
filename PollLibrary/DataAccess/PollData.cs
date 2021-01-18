@@ -65,6 +65,7 @@ namespace PollLibrary.DataAccess
             return await dbContext.Polls
                 .Include(x => x.Options)
                 .Include(x => x.Votes)
+                .Include(x => x.Context)
                 .SingleOrDefaultAsync(x => x.Id == id);
         }
 
@@ -73,6 +74,7 @@ namespace PollLibrary.DataAccess
             return await dbContext.Polls
                 .Include(x => x.Options)
                 .Include(x => x.Votes)
+                .Include(x => x.Context)
                 .ToListAsync();
         }
 

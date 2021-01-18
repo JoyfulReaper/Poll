@@ -66,8 +66,8 @@ namespace QuickTest
             List<Vote> votes = new List<Vote>();
             votes.Add(new Vote
             {
-                UserId = 1,
-                OptionId = 1
+                User = new User { UserName = "TestUser"},
+                Option = new Option { Name = "Option 1" }
             });
 
             return votes;
@@ -78,11 +78,11 @@ namespace QuickTest
             List<Option> options = new List<Option>();
             options.Add(new Option
             {
-                OptionValue = "test1"
+                Name = "Option 1"
             });
             options.Add(new Option
             {
-                OptionValue = "test2"
+                Name = "Option 2"
             });
 
             return options;

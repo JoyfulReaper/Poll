@@ -39,18 +39,15 @@ namespace PollLibrary.Models
         [Key]
         public long Id { get; set; }
 
-        //[Required]
-        [MaxLength(100)]
-        public string Name { get; set; }
+        [Required]
+        public String Name { get; set; }
 
-        //[Required]
+        [Required]
         public ICollection<Option> Options { get; set; }
 
         public ICollection<Vote> Votes { get; set; }
 
-        //[Required]
+        [Required]
         public Context Context { get; set; }
-        [ForeignKey(nameof(ContextId))]
-        public long ContextId { get; set; }
     }
 }

@@ -38,8 +38,7 @@ namespace PollLibrary.Models
         [Key]
         public long Id { get; set; }
 
-        //[Required]
-        [MaxLength(100)]
-        public String UserName { get; set; }
+        [Required]
+        public string UserName { get; set; }
     }
 }

@@ -8,8 +8,8 @@ namespace PollApi.Models
     public class PollDTO
     {
         public string Name { get; set; }
-        public List<OptionDTO> Options { get; set; }
-        public List<VoteDTO> Votes { get; set; }
+        public ICollection<OptionDTO> Options { get; set; }
+        public ICollection<VoteDTO> Votes { get; set; }
         public ContextDTO Context { get; set; }
     }
 }

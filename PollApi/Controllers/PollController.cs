@@ -3,6 +3,7 @@ using PollApi.Models;
 using PollLibrary.DataAccess;
 using PollLibrary.Models;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -24,24 +25,63 @@ namespace PollApi.Controllers
 
         // GET: api/<PollController>
         [HttpGet]
-        public async Task<IEnumerable<Poll>> Get()
+        public async Task<ActionResult<IEnumerable<PollDTO>>> Get()
         {
-            var test = await pollData.GetAllPolls();
-            return test;
+            var polls = await pollData.GetAllPolls();
+
+            return polls.Select(x => PollToDTO(x)).ToList();
         }
 
         // GET api/<PollController>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public async Task<ActionResult<PollDTO>> Get(int id)
         {
-            return "value";
+            var poll = await pollData.GetPollById(id);
+
+            if(poll == null)
+            {
+                return NotFound();
+            }
+
+            return PollToDTO(poll);
         }
 
         // POST api/<PollController>
         [HttpPost]
-        public async Task Post([FromBody] Poll poll)
+        public async Task Post([FromBody] PollDTO poll)
         {
-            await pollData.AddPoll(poll);
+            var options = new List<Option>();
+            foreach (var option in poll.Options)
+            {
+                options.Add(new Option { Name = option.Name });
+            }
+
+            var votes = new List<Vote>();
+            if (poll.Votes != null)
+            {
+                foreach (var v in poll.Votes)
+                {
+                    Vote vote = new Vote()
+                    {
+                        User = v.User,
+                        Option = v.Option
+                    };
+
+                    votes.Add(vote);
+                }
+            }
+            else
+            {
+                votes = null;
+            }
+
+            var newPoll = new Poll();
+            newPoll.Name = poll.Name;
+            newPoll.Context = new Context { Name = poll.Context.Name };
+            newPoll.Options = options;
+            newPoll.Votes = votes;
+
+            await pollData.AddPoll(newPoll);
         }
 
         // PUT api/<PollController>/5
@@ -56,10 +96,13 @@ namespace PollApi.Controllers
         {
         }
 
+
+
+
         private static OptionDTO OptionToDTO(Option option) =>
             new OptionDTO()
             {
-                OptionValue = option.OptionValue
+                Name = option.Name
             };
 
         private static ContextDTO ContextToDTO(Context context) =>
@@ -71,14 +114,40 @@ namespace PollApi.Controllers
         private static VoteDTO VoteToDTO(Vote vote) =>
             new VoteDTO
             {
-                User = vote.User
+                User = vote.User,
+                Option = vote.Option
             };
 
-        private static PollDTO PollToDTO(Poll poll) =>
-            new PollDTO()
+        private static UserDTO UserToDTO(User user) =>
+            new UserDTO
             {
-
+                UserName = user.UserName
             };
+
+        private static PollDTO PollToDTO(Poll poll)
+        {
+            List<OptionDTO> options = new List<OptionDTO>();
+            List<VoteDTO> votes = new List<VoteDTO>();
+
+            foreach (var option in poll.Options)
+            {
+                var temp = OptionToDTO(option);
+                options.Add(temp);
+            }
+
+            foreach (var vote in poll.Votes)
+            {
+                var temp = VoteToDTO(vote);
+                votes.Add(temp);
+            }
+
+            return new PollDTO()
+            {
+                Name = poll.Name,
+                Options = options,
+                Votes = votes
+            };
+        }
 
     }
 }
