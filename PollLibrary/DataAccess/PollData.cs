@@ -36,11 +36,15 @@ namespace PollLibrary.DataAccess
     {
         private readonly PollContext dbContext;
         private readonly IContextData contextData;
+        private readonly IUserData userData;
 
-        public PollData(PollContext dbContext, IContextData contextData)
+        public PollData(PollContext dbContext, 
+            IContextData contextData, 
+            IUserData userData)
         {
             this.dbContext = dbContext;
             this.contextData = contextData;
+            this.userData = userData;
         }
 
         public async Task AddPoll(Poll poll)
@@ -55,10 +59,31 @@ namespace PollLibrary.DataAccess
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task AddVote(Poll poll, Vote vote)
+        public async Task<bool> AddVote(Poll poll, Vote vote)
         {
+            var userDB = await userData.GetUser(vote.User.UserName);
+            var pollDB = await GetPollByName(poll.Name);
+            var voted = false;
+
+            if(pollDB == null)
+            {
+                return false;
+            }
+
+            if (userDB != null)
+            {
+                voted = await dbContext.Votes.AnyAsync(u => u.Id == userDB.Id && u.PollId == pollDB.Id);
+            }
+
+            if (voted)
+            {
+                return false;
+            }
+
             poll.Votes.Add(vote);
             await dbContext.SaveChangesAsync();
+
+            return true;
         }
 
         public async Task<Poll> GetPollById(int id)

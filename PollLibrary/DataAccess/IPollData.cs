@@ -32,7 +32,7 @@ namespace PollLibrary.DataAccess
     public interface IPollData
     {
         Task AddPoll(Poll poll);
-        Task AddVote(Poll poll, Vote vote);
+        Task<bool> AddVote(Poll poll, Vote vote);
         Task<List<Poll>> GetAllPolls();
         Task<Poll> GetPollById(int id);
         Task<Poll> GetPollByName(string name);
