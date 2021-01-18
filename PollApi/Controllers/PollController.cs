@@ -54,7 +54,7 @@ namespace PollApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<PollDTO>>> Get(string context)
         {
-            if(!await contextData.IsValidContext(context))
+            if (!await contextData.IsValidContext(context))
             {
                 return Unauthorized();
             }
@@ -63,6 +63,31 @@ namespace PollApi.Controllers
             var polls = await pollData.GetPollsByContext(context);
 
             return polls.Select(x => mapper.Map<Poll, PollDTO>(x)).ToList();
+        }
+
+        [Route("GetByName")]
+        [HttpGet]
+        public async Task<ActionResult<PollDTO>> GetByName(string context, string name)
+        {
+            if (!await contextData.IsValidContext(context))
+            {
+                return Unauthorized();
+            }
+
+            //var polls = await pollData.GetAllPolls();
+            var poll = await pollData.GetPollByName(name);
+
+            if(poll == null)
+            {
+                return NotFound();
+            }
+
+            if(poll.Context.Name != context)
+            {
+                return Unauthorized();
+            }
+
+            return mapper.Map<Poll, PollDTO>(poll);
         }
 
         // GET api/<PollController>/5
