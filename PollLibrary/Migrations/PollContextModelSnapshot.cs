@@ -71,6 +71,9 @@ namespace PollLibrary.Migrations
                     b.Property<long?>("ContextId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("CreatingUserId")
+                        .HasColumnType("bigint");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -79,6 +82,8 @@ namespace PollLibrary.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ContextId");
+
+                    b.HasIndex("CreatingUserId");
 
                     b.HasIndex("Name")
                         .IsUnique();
@@ -137,7 +142,8 @@ namespace PollLibrary.Migrations
                 {
                     b.HasOne("PollLibrary.Models.Poll", null)
                         .WithMany("Options")
-                        .HasForeignKey("PollId");
+                        .HasForeignKey("PollId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("PollLibrary.Models.Poll", b =>
@@ -146,7 +152,13 @@ namespace PollLibrary.Migrations
                         .WithMany()
                         .HasForeignKey("ContextId");
 
+                    b.HasOne("PollLibrary.Models.User", "CreatingUser")
+                        .WithMany()
+                        .HasForeignKey("CreatingUserId");
+
                     b.Navigation("Context");
+
+                    b.Navigation("CreatingUser");
                 });
 
             modelBuilder.Entity("PollLibrary.Models.Vote", b =>

@@ -2,7 +2,7 @@
 
 namespace PollLibrary.Migrations
 {
-    public partial class InitialDB : Migration
+    public partial class InitialDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -39,7 +39,8 @@ namespace PollLibrary.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ContextId = table.Column<long>(type: "bigint", nullable: true)
+                    ContextId = table.Column<long>(type: "bigint", nullable: true),
+                    CreatingUserId = table.Column<long>(type: "bigint", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -48,6 +49,12 @@ namespace PollLibrary.Migrations
                         name: "FK_Polls_Context_ContextId",
                         column: x => x.ContextId,
                         principalTable: "Context",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Polls_Users_CreatingUserId",
+                        column: x => x.CreatingUserId,
+                        principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -69,7 +76,7 @@ namespace PollLibrary.Migrations
                         column: x => x.PollId,
                         principalTable: "Polls",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -122,6 +129,11 @@ namespace PollLibrary.Migrations
                 column: "ContextId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Polls_CreatingUserId",
+                table: "Polls",
+                column: "CreatingUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Polls_Name",
                 table: "Polls",
                 column: "Name",
@@ -158,13 +170,13 @@ namespace PollLibrary.Migrations
                 name: "Options");
 
             migrationBuilder.DropTable(
-                name: "Users");
-
-            migrationBuilder.DropTable(
                 name: "Polls");
 
             migrationBuilder.DropTable(
                 name: "Context");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

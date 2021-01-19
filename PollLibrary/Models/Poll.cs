@@ -47,5 +47,8 @@ namespace PollLibrary.Models
 
         [Required]
         public Context Context { get; set; }
+
+        [Required]
+        public User CreatingUser { get; set; }
     }
 }

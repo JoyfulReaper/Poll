@@ -51,7 +51,8 @@ namespace PollLibrary.DataAccess
         {
             modelBuilder.Entity<Poll>()
                 .HasMany(x => x.Options)
-                .WithOne();
+                .WithOne()
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Poll>()
                 .HasMany(x => x.Votes)

@@ -124,8 +124,8 @@ namespace PollApi
                     Id = x.Id,
                     Name = x.Name,
                     Options = opts,
-                    Votes = vts,
-                    Context = mapper.Map<Context, ContextDTO>(x.Context)
+                    //Votes = vts,
+                    //Context = mapper.Map<Context, ContextDTO>(x.Context)
                 };
             });
 
