@@ -51,32 +51,40 @@ namespace PollApi.Controllers
         }
 
         // GET: api/<PollController>
+        /// <summary>
+        /// Get all polls for the given context
+        /// </summary>
+        /// <param name="context">The poll's context</param>
+        /// <returns>All polls in the given contexy</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PollDTO>>> Get(string context)
+        public async Task<ActionResult<IEnumerable<PollDTO>>> GetAll([FromQuery] string context)
         {
             if (!await contextData.IsValidContext(context))
             {
                 return Unauthorized();
             }
 
-            //var polls = await pollData.GetAllPolls();
             var polls = await pollData.GetPollsByContext(context);
-
             return polls.Select(x => mapper.Map<Poll, PollDTO>(x)).ToList();
         }
 
+
+        /// <summary>
+        /// Retreive a poll by name
+        /// </summary>
+        /// <param name="context">The poll's context</param>
+        /// <param name="name">The name of the poll</param>
+        /// <returns></returns>
         [Route("GetByName")]
         [HttpGet]
-        public async Task<ActionResult<PollDTO>> GetByName(string context, string name)
+        public async Task<ActionResult<PollDTO>> GetByName([FromQuery]string context, string name)
         {
             if (!await contextData.IsValidContext(context))
             {
                 return Unauthorized();
             }
 
-            //var polls = await pollData.GetAllPolls();
             var poll = await pollData.GetPollByName(name);
-
             if(poll == null)
             {
                 return NotFound();
@@ -90,9 +98,9 @@ namespace PollApi.Controllers
             return mapper.Map<Poll, PollDTO>(poll);
         }
 
-        // GET api/<PollController>/5
+        // GET api/<PollController>/5 (X)
         [HttpGet("{id}")]
-        public async Task<ActionResult<PollDTO>> Get(int id, string context)
+        public async Task<ActionResult<PollDTO>> GetById(int id, [FromQuery]string context)
         {
             if (!await contextData.IsValidContext(context))
             {
@@ -100,7 +108,6 @@ namespace PollApi.Controllers
             }
 
             var poll = await pollData.GetPollById(id);
-
             if (poll == null)
             {
                 return NotFound();
@@ -114,13 +121,12 @@ namespace PollApi.Controllers
             return mapper.Map<Poll, PollDTO>(poll);
         }
 
-        // POST api/<PollController>
+        // POST api/<PollController> (X)
         [HttpPost]
-        public async Task<ActionResult<PollDTO>> Post([FromBody] PollDTO poll)
+        public async Task<ActionResult<PollDTO>> Post([FromBody] PollDTO poll, [FromQuery] string context, [FromQuery] string username)
         {
-            var context = await contextData.GetContext(poll.Context.Name);
-
-            if (context == null)
+            var contextDB = await contextData.GetContext(context);
+            if (contextDB == null || username == null)
             {
                 return Unauthorized();
             }
@@ -131,43 +137,32 @@ namespace PollApi.Controllers
                 options.Add(new Option { Name = option.Name });
             }
 
-            //var votes = new List<Vote>();
-            //if (poll.Votes != null)
-            //{
-            //    foreach (var v in poll.Votes)
-            //    {
-            //        Vote vote = new Vote()
-            //        {
-            //            User = new User { UserName = v.User.UserName },
-            //            Option = new Option { Name = v.Option.Name }
-            //        };
-
-            //        votes.Add(vote);
-            //    }
-            //}
-            //else
-            //{
-            //    votes = null;
-            //}
+            var user = await userData.GetUser(username);
+            if(user == null)
+            {
+                user = new User()
+                { UserName = username };
+            }
 
             var newPoll = new Poll()
             {
                 Name = poll.Name,
-                Context = context,
+                Context = contextDB,
                 Options = options,
-                Votes = null
+                Votes = null,
+                CreatingUser = user
             };
 
             await pollData.AddPoll(newPoll);
 
-            return CreatedAtAction(nameof(Get), mapper.Map<Poll, PollDTO>(newPoll));
+            return CreatedAtAction(nameof(GetAll), mapper.Map<Poll, PollDTO>(newPoll));
         }
 
-        // PUT api/<PollController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        // PUT api/<PollController>/5   (Not used at the moment)
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
 
         // DELETE api/<PollController>/5
         [HttpDelete("{id}")]
@@ -186,7 +181,7 @@ namespace PollApi.Controllers
 
             await pollData.RemovePoll(poll);
 
-            return AcceptedAtAction("Delete");
+            return Accepted();
         }
     }
 }

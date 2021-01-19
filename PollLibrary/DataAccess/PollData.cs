@@ -63,19 +63,14 @@ namespace PollLibrary.DataAccess
         {
             var userDB = await userData.GetUser(vote.User.UserName);
             var pollDB = await GetPollByName(poll.Name);
-            var voted = false;
 
             if(pollDB == null)
             {
                 return false;
             }
 
-            if (userDB != null)
-            {
-                voted = await dbContext.Votes.AnyAsync(u => u.Id == userDB.Id && u.PollId == pollDB.Id);
-            }
-
-            if (voted)
+            var alreadyVoted = await dbContext.Votes.AnyAsync(u => u.Id == userDB.Id && u.PollId == pollDB.Id);
+            if (alreadyVoted)
             {
                 return false;
             }
