@@ -67,7 +67,7 @@ namespace PollApi.Controllers
 
         // GET api/<VoteController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<VoteDTO>> Get(int id, [FromQuery]string context)
+        public async Task<ActionResult<VoteDTO>> GetById(int id, [FromQuery]string context)
         {
             if (!await contextData.IsValidContext(context))
             {
@@ -120,7 +120,7 @@ namespace PollApi.Controllers
                 }
             }
 
-            return CreatedAtAction(nameof(Get), mapper.Map<Vote, VoteDTO>(newVote));
+            return CreatedAtAction(nameof(GetById), new { id = newVote.Id }, mapper.Map<Vote, VoteDTO>(newVote));
         }
 
         // PUT api/<VoteController>/5
