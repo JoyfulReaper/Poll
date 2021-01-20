@@ -39,10 +39,12 @@ namespace PollLibrary.DataAccess
             this.dbContext = dbContext;
         }
 
-        public async Task AddUser(string userName)
+        public async Task<User> AddUser(string userName)
         {
-            await dbContext.AddAsync(userName);
+            var user = await dbContext.AddAsync(new User() { UserName = userName });
             await dbContext.SaveChangesAsync();
+
+            return user.Entity;
         }
 
         public async Task<User> GetUser(string userName)
