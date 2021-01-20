@@ -84,6 +84,11 @@ namespace PollLibrary.DataAccess
                 return false;
             }
 
+            if(userDB == null)
+            {
+                userDB = await userData.AddUser(vote.User.UserName);
+            }
+
             var alreadyVoted = await dbContext.Votes.AnyAsync(u => u.Id == userDB.Id && u.Poll.Id == pollDB.Id);
             if (alreadyVoted)
             {
