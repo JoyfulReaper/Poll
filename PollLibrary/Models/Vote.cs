@@ -39,7 +39,6 @@ namespace PollLibrary.Models
         [Required]
         public Option Option { get; set; }
 
-        [ForeignKey("PollId")]
-        public long PollId { get; set; }
+        public Poll Poll { get; set; }
     }
 }

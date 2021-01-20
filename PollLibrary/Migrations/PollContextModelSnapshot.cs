@@ -121,7 +121,7 @@ namespace PollLibrary.Migrations
                     b.Property<long?>("OptionId")
                         .HasColumnType("bigint");
 
-                    b.Property<long>("PollId")
+                    b.Property<long?>("PollId")
                         .HasColumnType("bigint");
 
                     b.Property<long?>("UserId")
@@ -167,17 +167,17 @@ namespace PollLibrary.Migrations
                         .WithMany()
                         .HasForeignKey("OptionId");
 
-                    b.HasOne("PollLibrary.Models.Poll", null)
+                    b.HasOne("PollLibrary.Models.Poll", "Poll")
                         .WithMany("Votes")
-                        .HasForeignKey("PollId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PollId");
 
                     b.HasOne("PollLibrary.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("Option");
+
+                    b.Navigation("Poll");
 
                     b.Navigation("User");
                 });

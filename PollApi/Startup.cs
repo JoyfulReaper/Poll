@@ -59,7 +59,8 @@ namespace PollApi
 
             services.AddScoped<IUserData, UserData>()
                 .AddScoped<IPollData, PollData>()
-                .AddScoped<IContextData, ContextData>();
+                .AddScoped<IContextData, ContextData>()
+                .AddScoped<IVoteData, VoteData>();
 
             services.AddControllers();
 

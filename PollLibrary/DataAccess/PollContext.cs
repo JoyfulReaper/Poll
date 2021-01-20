@@ -56,7 +56,7 @@ namespace PollLibrary.DataAccess
 
             modelBuilder.Entity<Poll>()
                 .HasMany(x => x.Votes)
-                .WithOne();
+                .WithOne(x => x.Poll);
 
         }
     }

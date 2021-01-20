@@ -69,7 +69,7 @@ namespace PollLibrary.DataAccess
                 return false;
             }
 
-            var alreadyVoted = await dbContext.Votes.AnyAsync(u => u.Id == userDB.Id && u.PollId == pollDB.Id);
+            var alreadyVoted = await dbContext.Votes.AnyAsync(u => u.Id == userDB.Id && u.Poll.Id == pollDB.Id);
             if (alreadyVoted)
             {
                 return false;
@@ -81,7 +81,7 @@ namespace PollLibrary.DataAccess
             return true;
         }
 
-        public async Task<Poll> GetPollById(int id)
+        public async Task<Poll> GetPollById(long id)
         {
             var res =  await dbContext.Polls
                 .Include(x => x.Options)

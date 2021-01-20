@@ -75,8 +75,7 @@ namespace PollApi.Controllers
         /// <param name="context">The poll's context</param>
         /// <param name="name">The name of the poll</param>
         /// <returns></returns>
-        [Route("GetByName")]
-        [HttpGet]
+        [HttpGet("{name}")]
         public async Task<ActionResult<PollDTO>> GetByName([FromQuery]string context, string name)
         {
             if (!await contextData.IsValidContext(context))
@@ -99,7 +98,7 @@ namespace PollApi.Controllers
         }
 
         // GET api/<PollController>/5 (X)
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<PollDTO>> GetById(int id, [FromQuery]string context)
         {
             if (!await contextData.IsValidContext(context))
