@@ -77,9 +77,9 @@ namespace PollLibrary.DataAccess
                 .Where(x => x.Poll.Id == pollDB.Id)
                 .ToListAsync();
 
-            var option = options.FirstOrDefault(x => x.Name.ToLowerInvariant() == vote.Option.Name.ToLowerInvariant());
+            var option = options.FirstOrDefault(x => string.Equals(x.Name, vote.Option.Name, StringComparison.OrdinalIgnoreCase));
 
-            if(pollDB == null || option == null)
+            if (pollDB == null || option == null)
             {
                 return false;
             }
