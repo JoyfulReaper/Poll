@@ -39,8 +39,8 @@ namespace PollLibrary.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    ContextId = table.Column<long>(type: "bigint", nullable: true),
-                    CreatingUserId = table.Column<long>(type: "bigint", nullable: true)
+                    ContextId = table.Column<long>(type: "bigint", nullable: false),
+                    CreatingUserId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -50,13 +50,13 @@ namespace PollLibrary.Migrations
                         column: x => x.ContextId,
                         principalTable: "Context",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Polls_Users_CreatingUserId",
                         column: x => x.CreatingUserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -66,7 +66,7 @@ namespace PollLibrary.Migrations
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PollId = table.Column<long>(type: "bigint", nullable: true)
+                    PollId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -85,9 +85,9 @@ namespace PollLibrary.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<long>(type: "bigint", nullable: true),
-                    OptionId = table.Column<long>(type: "bigint", nullable: true),
-                    PollId = table.Column<long>(type: "bigint", nullable: true)
+                    UserId = table.Column<long>(type: "bigint", nullable: false),
+                    OptionId = table.Column<long>(type: "bigint", nullable: false),
+                    PollId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -97,19 +97,17 @@ namespace PollLibrary.Migrations
                         column: x => x.OptionId,
                         principalTable: "Options",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Votes_Polls_PollId",
                         column: x => x.PollId,
                         principalTable: "Polls",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Votes_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(

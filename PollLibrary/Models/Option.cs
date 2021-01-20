@@ -25,7 +25,7 @@ SOFTWARE.
 
 
 using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PollLibrary.Models
 {
@@ -37,5 +37,8 @@ namespace PollLibrary.Models
         [Required]
         [MaxLength(100)]
         public string Name { get; set; }
+
+        [Required]
+        public Poll Poll { get; set; }
     }
 }

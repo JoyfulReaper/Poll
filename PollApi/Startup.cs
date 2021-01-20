@@ -140,8 +140,9 @@ namespace PollApi
 
             mapper.Register<Vote, VoteDTO>(x => new VoteDTO()
             {
-                User = mapper.Map<User, UserDTO>(x.User),
-                Option = mapper.Map<Option, OptionDTO>(x.Option),
+                PollName = x.Poll.Name,
+                UserName = x.User.UserName,
+                Option = x.Option.Name
             });
         }
     }

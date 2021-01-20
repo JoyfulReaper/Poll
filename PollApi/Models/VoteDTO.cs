@@ -27,7 +27,8 @@ namespace PollApi.Models
 {
     public class VoteDTO
     {
-        public UserDTO User { get; set; }
-        public OptionDTO Option { get; set; }
+        public string PollName { get; set; }
+        public string UserName { get; set; }
+        public string Option { get; set; }
     }
 }

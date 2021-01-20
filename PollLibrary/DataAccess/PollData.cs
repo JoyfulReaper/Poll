@@ -49,6 +49,14 @@ namespace PollLibrary.DataAccess
 
         public async Task AddPoll(Poll poll)
         {
+            var hs = new HashSet<string>();
+            bool allUnique = poll.Options.All(x => hs.Add(x.Name.ToUpperInvariant()));
+
+            if(!allUnique)
+            {
+                throw new ArgumentException("Options are not unique");
+            }
+
             await dbContext.AddAsync(poll);
             await dbContext.SaveChangesAsync();
         }
@@ -64,7 +72,14 @@ namespace PollLibrary.DataAccess
             var userDB = await userData.GetUser(vote.User.UserName);
             var pollDB = await GetPollByName(poll.Name);
 
-            if(pollDB == null)
+            var options = await dbContext.Options
+                .Include(x => x.Poll)
+                .Where(x => x.Poll.Id == pollDB.Id)
+                .ToListAsync();
+
+            var option = options.FirstOrDefault(x => x.Name.ToLowerInvariant() == vote.Option.Name.ToLowerInvariant());
+
+            if(pollDB == null || option == null)
             {
                 return false;
             }
@@ -75,7 +90,12 @@ namespace PollLibrary.DataAccess
                 return false;
             }
 
+            vote.Option = option;
+            vote.Poll = pollDB;
+            vote.User = userDB;
+
             poll.Votes.Add(vote);
+            await dbContext.AddAsync(vote);
             await dbContext.SaveChangesAsync();
 
             return true;

@@ -51,13 +51,44 @@ namespace PollLibrary.DataAccess
         {
             modelBuilder.Entity<Poll>()
                 .HasMany(x => x.Options)
-                .WithOne()
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithOne(x => x.Poll)
+                .IsRequired();
 
             modelBuilder.Entity<Poll>()
                 .HasMany(x => x.Votes)
-                .WithOne(x => x.Poll);
+                .WithOne(x => x.Poll)
+                .OnDelete(DeleteBehavior.NoAction);
 
+            modelBuilder.Entity<Poll>()
+                 .HasOne(x => x.Context)
+                 .WithMany()
+                 .IsRequired();
+
+            modelBuilder.Entity<Poll>()
+                .HasOne(x => x.CreatingUser)
+                .WithMany()
+                .IsRequired();
+
+            modelBuilder.Entity<Option>()
+                .HasOne(x => x.Poll)
+                .WithMany(x => x.Options)
+                .IsRequired();
+
+            modelBuilder.Entity<Vote>()
+                .HasOne(x => x.User)
+                .WithMany()
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            modelBuilder.Entity<Vote>()
+                .HasOne(x => x.Option)
+                .WithMany()
+                .IsRequired();
+
+            modelBuilder.Entity<Vote>()
+                .HasOne(x => x.Poll)
+                .WithMany(x => x.Votes)
+                .IsRequired();
         }
     }
 }

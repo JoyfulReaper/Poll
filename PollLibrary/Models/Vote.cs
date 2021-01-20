@@ -39,6 +39,7 @@ namespace PollLibrary.Models
         [Required]
         public Option Option { get; set; }
 
+        [Required]
         public Poll Poll { get; set; }
     }
 }
