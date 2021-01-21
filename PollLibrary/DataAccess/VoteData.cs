@@ -25,10 +25,9 @@ SOFTWARE.
 
 using Microsoft.EntityFrameworkCore;
 using PollLibrary.Models;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace PollLibrary.DataAccess
 {
@@ -43,12 +42,25 @@ namespace PollLibrary.DataAccess
 
         public async Task<Vote> GetById(long id)
         {
-            var res = await dbContext.Votes
-                .Include(x => x.Option)
+            var vote = await dbContext.Votes
                 .Include(x => x.User)
+                .Include(x => x.Option)
+                .Include(x => x.Poll)
                 .SingleOrDefaultAsync(x => x.Id == id);
 
-            return res;
+            return vote;
+        }
+
+        public async Task<List<Vote>> GetByPoll(Poll poll)
+        {
+            var votes = await dbContext.Votes
+                .Where(x => x.Poll.Id == poll.Id)
+                .Include(x => x.User)
+                .Include(x => x.Option)
+                .Include(x => x.Poll)
+                .ToListAsync();
+
+            return votes;
         }
     }
 }

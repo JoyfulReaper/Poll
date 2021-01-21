@@ -31,7 +31,7 @@ namespace PollApi.Models
     {
         public long Id { get; set; }
         public string Name { get; set; }
-        public ICollection<OptionDTO> Options { get; set; }
+        public ICollection<string> Options { get; set; }
 
         // public ICollection<VoteDTO> Votes { get; set; }
         // public ContextDTO Context { get; set; }

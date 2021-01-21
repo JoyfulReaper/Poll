@@ -46,13 +46,7 @@ namespace PollLibrary.DataAccess
         public async Task<bool> IsValidContext(string name)
         {
             var ctx = await GetContext(name);
-
-            if (ctx == null)
-            {
-                return false;
-            }
-
-            return true;
+            return ctx != null;
         }
     }
 }

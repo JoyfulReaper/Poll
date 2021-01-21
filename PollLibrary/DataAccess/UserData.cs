@@ -56,12 +56,7 @@ namespace PollLibrary.DataAccess
         {
             var user = await GetUser(userName);
 
-            if (user == null)
-            {
-                return false;
-            }
-
-            return true;
+            return user != null;
         }
 
         public async Task RemoveUser(string userName)
@@ -74,6 +69,7 @@ namespace PollLibrary.DataAccess
             }
 
             dbContext.Users.Remove(user);
+            await dbContext.SaveChangesAsync();
         }
     }
 }

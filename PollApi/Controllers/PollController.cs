@@ -133,7 +133,7 @@ namespace PollApi.Controllers
             var options = new List<Option>();
             foreach (var option in poll.Options)
             {
-                options.Add(new Option { Name = option.Name });
+                options.Add(new Option { Name = option });
             }
 
             var user = await userData.GetUser(username);

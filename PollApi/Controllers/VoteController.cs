@@ -95,7 +95,7 @@ namespace PollApi.Controllers
             var poll = await pollData.GetPollByName(vote.PollName);
             var ctx = await contextData.GetContext(context);
 
-            if (ctx == null || poll.Context.Name != ctx.Name)
+            if (ctx == null || poll.Context.Name != ctx.Name || userName == null)
             {
                 return Unauthorized();
             }
@@ -107,14 +107,14 @@ namespace PollApi.Controllers
 
             var newVote = new Vote()
             {
-                User = new User() { UserName = vote.UserName },
+                User = new User() { UserName = userName },
                 Option = new Option() { Name = vote.Option },
-                Poll = new Poll() { Name = vote.PollName}
+                Poll = poll
             };
 
             var success = await pollData.AddVote(poll, newVote);
             {
-                if(!success)
+                if(success == null)
                 {
                     return BadRequest();
                 }

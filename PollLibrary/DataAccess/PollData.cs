@@ -47,7 +47,7 @@ namespace PollLibrary.DataAccess
             this.userData = userData;
         }
 
-        public async Task AddPoll(Poll poll)
+        public async Task<Poll> AddPoll(Poll poll)
         {
             var hs = new HashSet<string>();
             bool allUnique = poll.Options.All(x => hs.Add(x.Name.ToUpperInvariant()));
@@ -59,6 +59,8 @@ namespace PollLibrary.DataAccess
 
             await dbContext.AddAsync(poll);
             await dbContext.SaveChangesAsync();
+
+            return poll;
         }
 
         public async Task RemovePoll(Poll poll)
@@ -67,8 +69,13 @@ namespace PollLibrary.DataAccess
             await dbContext.SaveChangesAsync();
         }
 
-        public async Task<bool> AddVote(Poll poll, Vote vote)
+        public async Task<Vote> AddVote(Poll poll, Vote vote)
         {
+            if(vote.User == null)
+            {
+                throw new Exception("Username cannot be null!");
+            }
+
             var userDB = await userData.GetUser(vote.User.UserName);
             var pollDB = await GetPollByName(poll.Name);
 
@@ -81,7 +88,7 @@ namespace PollLibrary.DataAccess
 
             if (pollDB == null || option == null)
             {
-                return false;
+                throw new ArgumentException($"{(pollDB == null ? "poll" : "option")} is not valid", pollDB == null ? nameof(poll) : nameof(vote));
             }
 
             if(userDB == null)
@@ -89,10 +96,10 @@ namespace PollLibrary.DataAccess
                 userDB = await userData.AddUser(vote.User.UserName);
             }
 
-            var alreadyVoted = await dbContext.Votes.AnyAsync(u => u.Id == userDB.Id && u.Poll.Id == pollDB.Id);
+            var alreadyVoted = await dbContext.Votes.AnyAsync(x => x.User.Id == userDB.Id && x.Poll.Id == pollDB.Id);
             if (alreadyVoted)
             {
-                return false;
+                throw new ArgumentException("User has already voted", nameof(vote));
             }
 
             vote.Option = option;
@@ -103,7 +110,7 @@ namespace PollLibrary.DataAccess
             await dbContext.AddAsync(vote);
             await dbContext.SaveChangesAsync();
 
-            return true;
+            return vote;
         }
 
         public async Task<Poll> GetPollById(long id)
@@ -112,6 +119,7 @@ namespace PollLibrary.DataAccess
                 .Include(x => x.Options)
                 .Include(x => x.Votes)
                 .Include(x => x.Context)
+                .Include(x => x.CreatingUser)
                 .SingleOrDefaultAsync(x => x.Id == id);
 
             return res;
@@ -123,6 +131,7 @@ namespace PollLibrary.DataAccess
                 .Include(x => x.Options)
                 .Include(x => x.Votes)
                 .Include(x => x.Context)
+                .Include(x => x.CreatingUser)
                 .ToListAsync();
 
             return res;
@@ -133,6 +142,8 @@ namespace PollLibrary.DataAccess
             return await dbContext.Polls
                 .Include(x => x.Options)
                 .Include(x => x.Votes)
+                .Include(x => x.Context)
+                .Include(x => x.CreatingUser)
                 .SingleOrDefaultAsync(x => x.Name == name);
         }
 
@@ -148,6 +159,8 @@ namespace PollLibrary.DataAccess
             return await dbContext.Polls
                 .Include(x => x.Options)
                 .Include(x => x.Votes)
+                .Include(x => x.Context)
+                .Include(x => x.CreatingUser)
                 .Where(x => x.Context == ctx)
                 .ToListAsync();
         }

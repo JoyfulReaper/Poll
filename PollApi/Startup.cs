@@ -101,32 +101,26 @@ namespace PollApi
                 Name = x.Name
             });
 
-            mapper.Register<Option, OptionDTO>(x => new OptionDTO()
-            {
-                Name = x?.Name
-            });
-
             mapper.Register<Poll, PollDTO>(x =>
             {
-                List<OptionDTO> opts = new List<OptionDTO>();
-                List<VoteDTO> vts = new List<VoteDTO>();
+                List<string> options = new List<string>();
+                List<VoteDTO> votes = new List<VoteDTO>();
 
                 if (x.Options != null)
                 {
-                    x.Options.ToList().ForEach(x => opts.Add(mapper.Map<Option, OptionDTO>(x)));
+                    x.Options.ToList().ForEach(x => options.Add(x.Name));
                 }
                 if (x.Votes != null)
                 {
-                    x.Votes.ToList().ForEach(x => vts.Add(mapper.Map<Vote, VoteDTO>(x)));
+                    x.Votes.ToList().ForEach(x => votes.Add(mapper.Map<Vote, VoteDTO>(x)));
                 }
 
                 return new PollDTO()
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    Options = opts,
-                    //Votes = vts,
-                    //Context = mapper.Map<Context, ContextDTO>(x.Context)
+                    Options = options
+                    //Votes = votes
                 };
             });
 
@@ -141,7 +135,7 @@ namespace PollApi
             mapper.Register<Vote, VoteDTO>(x => new VoteDTO()
             {
                 PollName = x.Poll.Name,
-                UserName = x.User.UserName,
+                //UserName = x.User.UserName,
                 Option = x.Option.Name
             });
         }

@@ -35,12 +35,6 @@ namespace PollLibrary.DataAccess
 
         }
 
-        //protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        //{
-        //    //TODO Remove after testing
-        //    optionsBuilder.UseSqlServer("Server=;Database=Poll;Trusted_Connection=True;");
-        //}
-
         public DbSet<User> Users { get; set; }
         public DbSet<Option> Options { get; set; }
         public DbSet<Vote> Votes { get; set; }
