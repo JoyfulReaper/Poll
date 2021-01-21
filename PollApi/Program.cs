@@ -26,6 +26,7 @@ SOFTWARE.
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
+// TODO Allow multiple polls with the same name in different contexts
 
 namespace PollApi
 {

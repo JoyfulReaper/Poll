@@ -24,6 +24,8 @@ SOFTWARE.
 */
 
 using Microsoft.AspNetCore.Mvc;
+using PollLibrary.DataAccess;
+using PollLibrary.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,36 +39,69 @@ namespace PollApi.Controllers
     [ApiController]
     public class ResultsController : ControllerBase
     {
-        // GET: api/<ResultsController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IPollData pollData;
+        private readonly IContextData contextData;
+
+        public ResultsController(IPollData pollData, IContextData contextData)
         {
-            return new string[] { "value1", "value2" };
+            this.pollData = pollData;
+            this.contextData = contextData;
         }
 
+        // GET: api/<ResultsController>
+        //[HttpGet]
+        //public IEnumerable<string> Get()
+        //{
+        //    return new string[] { "value1", "value2" };
+        //}
+
         // GET api/<ResultsController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult<Result>> GetById(int id, [FromQuery]string context)
         {
-            return "value";
+            if(!await contextData.IsValidContext(context))
+            {
+                return Unauthorized();
+            }
+
+            Poll poll = await pollData.GetPollById(id);
+            if(poll == null)
+            {
+                return NotFound();
+            }
+
+            if(poll.Context.Name != context)
+            {
+                return Unauthorized();
+            }
+
+            Result res = await pollData.GetResults(poll);
+
+            return res;
+        }
+
+        [HttpGet("{name}")]
+        public async Task<ActionResult<Result>> GetByName(string name, [FromQuery]string context)
+        {
+            return NotFound();
         }
 
         // POST api/<ResultsController>
-        [HttpPost]
-        public void Post([FromBody] string value)
-        {
-        }
+        //[HttpPost]
+        //public void Post([FromBody] string value)
+        //{
+        //}
 
         // PUT api/<ResultsController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
-        {
-        }
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody] string value)
+        //{
+        //}
 
         // DELETE api/<ResultsController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
     }
 }

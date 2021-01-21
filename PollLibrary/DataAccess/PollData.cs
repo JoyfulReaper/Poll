@@ -47,6 +47,32 @@ namespace PollLibrary.DataAccess
             this.userData = userData;
         }
 
+        public async Task<Result> GetResults(Poll poll)
+        {
+            var votes = await dbContext.Votes
+                .Include(x => x.Option)
+                .Include(x => x.User)
+                .Where(x => x.Poll.Id == poll.Id)
+                .ToListAsync();
+
+            Result res = new Result();
+            res.PollName = poll.Name;
+
+            foreach(var vote in votes)
+            {
+                try
+                {
+                    res.Results[vote.Option.Name] += 1;
+                }
+                catch (KeyNotFoundException)
+                {
+                    res.Results[vote.Option.Name] = 1;
+                }
+            }
+
+            return res;
+        }
+
         public async Task<Poll> AddPoll(Poll poll)
         {
             var hs = new HashSet<string>();

@@ -38,5 +38,6 @@ namespace PollLibrary.DataAccess
         Task<Poll> GetPollByName(string name);
         Task<List<Poll>> GetPollsByContext(string context);
         Task RemovePoll(Poll poll);
+        Task<Result> GetResults(Poll poll);
     }
 }

@@ -92,14 +92,14 @@ namespace PollApi.Controllers
             var poll = await pollData.GetPollByName(vote.PollName);
             var ctx = await contextData.GetContext(context);
 
-            if (ctx == null || poll.Context.Name != ctx.Name || userName == null)
-            {
-                return Unauthorized();
-            }
-
             if (poll == null)
             {
                 return NotFound();
+            }
+
+            if (ctx == null || poll.Context.Name != ctx.Name || userName == null)
+            {
+                return Unauthorized();
             }
 
             var newVote = new Vote()
