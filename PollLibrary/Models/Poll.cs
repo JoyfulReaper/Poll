@@ -30,7 +30,6 @@ using System.ComponentModel.DataAnnotations;
 
 namespace PollLibrary.Models
 {
-    [Index(nameof(Name), IsUnique=true)]
     public partial class Poll
     {
         [Key]

@@ -83,7 +83,7 @@ namespace PollApi.Controllers
                 return Unauthorized();
             }
 
-            var poll = await pollData.GetPollByName(name);
+            var poll = await pollData.GetPollByName(name, context);
             if(poll == null)
             {
                 return NotFound();
@@ -106,7 +106,7 @@ namespace PollApi.Controllers
                 return Unauthorized();
             }
 
-            var poll = await pollData.GetPollById(id);
+            var poll = await pollData.GetPollById(id, context);
             if (poll == null)
             {
                 return NotFound();
@@ -172,7 +172,7 @@ namespace PollApi.Controllers
                 return Unauthorized();
             }
 
-            var poll = await pollData.GetPollById(id);
+            var poll = await pollData.GetPollById(id,context);
             if (poll == null)
             {
                 return NotFound();

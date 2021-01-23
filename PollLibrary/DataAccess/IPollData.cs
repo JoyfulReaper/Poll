@@ -34,8 +34,8 @@ namespace PollLibrary.DataAccess
         Task<Poll> AddPoll(Poll poll);
         Task<Vote> AddVote(Poll poll, Vote vote);
         Task<List<Poll>> GetAllPolls();
-        Task<Poll> GetPollById(long id);
-        Task<Poll> GetPollByName(string name);
+        Task<Poll> GetPollById(long id, string context);
+        Task<Poll> GetPollByName(string name, string context);
         Task<List<Poll>> GetPollsByContext(string context);
         Task RemovePoll(Poll poll);
         Task<Result> GetResults(Poll poll);

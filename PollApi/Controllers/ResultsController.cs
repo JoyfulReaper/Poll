@@ -64,7 +64,7 @@ namespace PollApi.Controllers
                 return Unauthorized();
             }
 
-            Poll poll = await pollData.GetPollById(id);
+            Poll poll = await pollData.GetPollById(id, context);
             if(poll == null)
             {
                 return NotFound();

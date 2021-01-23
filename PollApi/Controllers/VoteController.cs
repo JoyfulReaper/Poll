@@ -89,7 +89,7 @@ namespace PollApi.Controllers
         [HttpPost]
         public async Task<ActionResult<VoteDTO>> Post([FromBody] VoteDTO vote, [FromQuery]string userName, string context)
         {
-            var poll = await pollData.GetPollByName(vote.PollName);
+            var poll = await pollData.GetPollByName(vote.PollName, context);
             var ctx = await contextData.GetContext(context);
 
             if (poll == null)
