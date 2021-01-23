@@ -119,8 +119,8 @@ namespace PollApi
                 {
                     Id = x.Id,
                     Name = x.Name,
-                    Options = options
-                    //Votes = votes
+                    Options = options,
+                    Question = x.Question
                 };
             });
 
