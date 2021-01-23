@@ -23,7 +23,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using PollApi.Models;
+
+using DemoPollApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
