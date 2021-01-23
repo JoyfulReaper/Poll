@@ -83,7 +83,25 @@ namespace PollApi.Controllers
         [HttpGet("{name}")]
         public async Task<ActionResult<Result>> GetByName(string name, [FromQuery]string context)
         {
-            return NotFound();
+            if (!await contextData.IsValidContext(context))
+            {
+                return Unauthorized();
+            }
+
+            Poll poll = await pollData.GetPollByName(name, context);
+            if (poll == null)
+            {
+                return NotFound();
+            }
+
+            if (poll.Context.Name != context)
+            {
+                return Unauthorized();
+            }
+
+            Result res = await pollData.GetResults(poll);
+
+            return res;
         }
 
         // POST api/<ResultsController>
