@@ -23,15 +23,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+using System;
 using System.Collections.Generic;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace DemoPollApp.Models
+namespace DemoPollApp.Helpers
 {
-    public class Poll
+    public static class ResultHelper
     {
-        public long Id { get; set; }
-        public string Name { get; set; }
-        public string Question { get; set; }
-        public List<string> Options { get; set; } = new List<string>();
+        public static async Task GetResultsOnConsole(string context)
+        {
+            Console.Write("Get Results for which poll: ");
+            var pollName = Console.ReadLine();
+
+            var results = await APIHelper.GetResult(pollName, context);
+
+            Console.WriteLine();
+            foreach(var res in results.Results)
+            {
+                ConsoleHelper.ColorWriteLine(ConsoleColor.Green, $"Option: {res.Key}, Votes: {res.Value}");
+            }
+            Console.WriteLine();
+        }
     }
 }

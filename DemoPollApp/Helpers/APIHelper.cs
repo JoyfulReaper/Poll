@@ -23,7 +23,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using PollApi.Models;
+using DemoPollApp.Models;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -46,6 +46,23 @@ namespace DemoPollApp.Helpers
                 new MediaTypeWithQualityHeaderValue("application/ajson"));
         }
 
+        public async static Task<Poll> GetPoll(string name, string context)
+        {
+            Poll poll = null;
+            HttpResponseMessage response = await client.GetAsync($"/api/Polls/{name}?context={context}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                poll = await response.Content.ReadAsAsync<Poll>();
+            }
+            else
+            {
+                throw new Exception($"Unable to retereive poll: {name}");
+            }
+
+            return poll;
+        }
+
         public async static Task<List<Poll>> GetAllPolls(string context)
         {
             List<Poll> polls = new List<Poll>();
@@ -62,6 +79,34 @@ namespace DemoPollApp.Helpers
         public async static Task<HttpStatusCode> CreatePoll(Poll poll, string context, string userName)
         {
             HttpResponseMessage response = await client.PostAsJsonAsync($"api/Polls?context={context}&username={userName}", poll);
+            return response.StatusCode;
+        }
+
+        public async static Task<Result> GetResult(string pollName, string context)
+        {
+            Result results = null;
+
+            HttpResponseMessage response = await client.GetAsync($"api/Results/{pollName}?context={context}");
+            if(response.IsSuccessStatusCode)
+            {
+                results = await response.Content.ReadAsAsync<Result>();
+            }
+            else
+            {
+                throw new Exception($"Unsuccessful getting results for {pollName}");
+            }
+
+            return results;
+        }
+
+        public async static Task<HttpStatusCode> VoteOnPoll(Vote vote, string context, string username)
+        {
+            HttpResponseMessage response = await client.PostAsJsonAsync($"api/Vote?context={context}&username={username}", vote);
+            if(!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Unable to save vote: {response.StatusCode} Message: {await response.Content.ReadAsStringAsync()}");
+            }
+
             return response.StatusCode;
         }
     }

@@ -77,7 +77,7 @@ namespace DemoPollApp
                 if(!await PerformSelection((Option)option))
                 {
                     Console.WriteLine();
-                    ConsoleHelper.ColorWriteLine("Please select a valid option!");
+                    ConsoleHelper.ColorWriteLine(ConsoleColor.Red, "Please select a valid option!");
                     Console.WriteLine();
                 }
             }
@@ -111,6 +111,12 @@ namespace DemoPollApp
                         }
                     case Option.PollResults:
                         {
+                            await ResultHelper.GetResultsOnConsole(context);
+                            break;
+                        }
+                    case Option.VoteOnPoll:
+                        {
+                            await VoteHelper.VoteOnPollOnConsole(context, userName);
                             break;
                         }
                     default:
@@ -122,6 +128,7 @@ namespace DemoPollApp
             }
             catch(Exception e)
             {
+                Console.WriteLine();
                 ConsoleHelper.ColorWriteLine(ConsoleColor.Red, "An Exception Occured: ");
                 ConsoleHelper.ColorWriteLine(ConsoleColor.Yellow, e.Message);
                 Console.WriteLine();

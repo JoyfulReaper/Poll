@@ -23,15 +23,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System.Collections.Generic;
-
 namespace DemoPollApp.Models
 {
-    public class Poll
+    public class Vote
     {
-        public long Id { get; set; }
-        public string Name { get; set; }
-        public string Question { get; set; }
-        public List<string> Options { get; set; } = new List<string>();
+        public string PollName { get; set; }
+        public string Option { get; set; }
     }
 }
