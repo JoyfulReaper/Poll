@@ -124,6 +124,11 @@ namespace PollApi.Controllers
         [HttpPost]
         public async Task<ActionResult<PollDTO>> Post([FromBody] PollDTO poll, [FromQuery] string context, [FromQuery] string username)
         {
+            if(poll == null || string.IsNullOrEmpty(poll.Name) || string.IsNullOrEmpty(poll.Question) || poll.Options == null)
+            {
+                BadRequest("Poll failed validation");
+            }
+
             var contextDB = await contextData.GetContext(context);
             if (contextDB == null || username == null)
             {
@@ -146,6 +151,7 @@ namespace PollApi.Controllers
             var newPoll = new Poll()
             {
                 Name = poll.Name,
+                Question = poll.Question,
                 Context = contextDB,
                 Options = options,
                 Votes = null,
