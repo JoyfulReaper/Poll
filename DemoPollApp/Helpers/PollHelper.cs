@@ -35,15 +35,9 @@ namespace DemoPollApp.Helpers
 {
     public static class PollHelper
     {
-        public async static Task ListPollsOnConsole(HttpClient client, string context)
+        public async static Task ListPollsOnConsole(string context)
         {
-            List<Poll> polls = new List<Poll>();
-            HttpResponseMessage response = await client.GetAsync($"/api/Polls?context={context}");
-
-            if(response.IsSuccessStatusCode)
-            {
-                polls = await response.Content.ReadAsAsync<List<Poll>>();
-            }
+            var polls = await  APIHelper.GetAllPolls(context);
 
             Console.WriteLine();
             foreach(var p in polls)
@@ -62,13 +56,11 @@ namespace DemoPollApp.Helpers
                 }
                 sb.Remove(sb.Length - 2, 2);
                 Console.WriteLine(sb);
-
-                Console.WriteLine();
                 Console.WriteLine();
             }
         }
 
-        public async static Task CreatePollFromConsoleInput(HttpClient client, string context, string userName)
+        public async static Task CreatePollFromConsoleInput(string context, string userName)
         {
             Poll poll = new Poll();
 
@@ -98,8 +90,7 @@ namespace DemoPollApp.Helpers
             Console.WriteLine();
             if (create)
             {
-                HttpResponseMessage response = await client.PostAsJsonAsync($"api/Polls?context={context}&username={userName}", poll);
-                Console.WriteLine($"Response Status Code: {response.StatusCode}");
+                ConsoleHelper.ColorWriteLine(ConsoleColor.Yellow, $"Response Status Code: {await APIHelper.CreatePoll(poll, context, userName)}");
             }
             else
             {

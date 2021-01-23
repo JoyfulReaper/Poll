@@ -30,29 +30,21 @@ SOFTWARE.
 
 using DemoPollApp.Helpers;
 using System;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading.Tasks;
 
 namespace DemoPollApp
 {
-    public enum Option { Quit, ChangeUser, ListPolls, CreatePoll, Invalid };
+    public enum Option { Quit, ChangeUser, ListPolls, CreatePoll, VoteOnPoll, PollResults, Invalid };
 
     class Program
     {
         // Configuration Options
         private static string context = "testing"; // Set the poll context 
 
-        private static HttpClient httpClient = new HttpClient();
         private static string userName = "testUser";
 
         static async Task Main(string[] args)
         {
-            httpClient.BaseAddress = new Uri("http://localhost:8080");
-            httpClient.DefaultRequestHeaders.Accept.Clear();
-            httpClient.DefaultRequestHeaders.Accept.Add(
-                new MediaTypeWithQualityHeaderValue("application/ajson"));
-
             while (true)
             {
                 ConsoleHelper.ColorWrite(ConsoleColor.Cyan, "Poll API Demo Application");
@@ -64,6 +56,8 @@ namespace DemoPollApp
                 Console.WriteLine("1.) Change username");
                 Console.WriteLine("2.) List Polls");
                 Console.WriteLine("3.) Create Poll");
+                Console.WriteLine("4.) Vote on Poll");
+                Console.WriteLine("5.) Poll Results");
 
                 Console.WriteLine();
                 Console.Write("Option: ");
@@ -107,12 +101,16 @@ namespace DemoPollApp
                         }
                     case Option.CreatePoll:
                         {
-                            await PollHelper.CreatePollFromConsoleInput(httpClient, context, userName);
+                            await PollHelper.CreatePollFromConsoleInput(context, userName);
                             break;
                         }
                     case Option.ListPolls:
                         {
-                            await PollHelper.ListPollsOnConsole(httpClient, context);
+                            await PollHelper.ListPollsOnConsole(context);
+                            break;
+                        }
+                    case Option.PollResults:
+                        {
                             break;
                         }
                     default:
@@ -125,7 +123,8 @@ namespace DemoPollApp
             catch(Exception e)
             {
                 ConsoleHelper.ColorWriteLine(ConsoleColor.Red, "An Exception Occured: ");
-                Console.WriteLine(e.Message);
+                ConsoleHelper.ColorWriteLine(ConsoleColor.Yellow, e.Message);
+                Console.WriteLine();
             }
 
             return true;
