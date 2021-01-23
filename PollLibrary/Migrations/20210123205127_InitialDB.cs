@@ -2,7 +2,7 @@
 
 namespace PollLibrary.Migrations
 {
-    public partial class InitialDb : Migration
+    public partial class InitialDB : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -38,7 +38,8 @@ namespace PollLibrary.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Question = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     ContextId = table.Column<long>(type: "bigint", nullable: false),
                     CreatingUserId = table.Column<long>(type: "bigint", nullable: false)
                 },
@@ -130,12 +131,6 @@ namespace PollLibrary.Migrations
                 name: "IX_Polls_CreatingUserId",
                 table: "Polls",
                 column: "CreatingUserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Polls_Name",
-                table: "Polls",
-                column: "Name",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_UserName",

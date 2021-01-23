@@ -9,8 +9,8 @@ using PollLibrary.DataAccess;
 namespace PollLibrary.Migrations
 {
     [DbContext(typeof(PollContext))]
-    [Migration("20210120004611_InitialDb")]
-    partial class InitialDb
+    [Migration("20210123205127_InitialDB")]
+    partial class InitialDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -77,6 +77,11 @@ namespace PollLibrary.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<string>("Question")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
@@ -85,9 +90,6 @@ namespace PollLibrary.Migrations
                     b.HasIndex("ContextId");
 
                     b.HasIndex("CreatingUserId");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("Polls");
                 });
