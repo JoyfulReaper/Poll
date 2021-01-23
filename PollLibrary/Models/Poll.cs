@@ -36,8 +36,12 @@ namespace PollLibrary.Models
         public long Id { get; set; }
 
         [Required]
+        [MaxLength(20)]
+        public string Name { get; set; }
+
+        [Required]
         [MaxLength(100)]
-        public String Name { get; set; }
+        public string Question { get; set; }
 
         [Required]
         public ICollection<Option> Options { get; set; }
