@@ -107,7 +107,7 @@ namespace DemoPollApp
                         }
                     case Option.CreatePoll:
                         {
-                            PollHelper.CreatePollFromConsoleInput(httpClient, context);
+                            await PollHelper.CreatePollFromConsoleInput(httpClient, context, userName);
                             break;
                         }
                     case Option.ListPolls:

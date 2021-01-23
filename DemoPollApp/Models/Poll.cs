@@ -31,6 +31,7 @@ namespace PollApi.Models
     {
         public long Id { get; set; }
         public string Name { get; set; }
-        public ICollection<string> Options { get; set; }
+        public string Question { get; set; }
+        public ICollection<string> Options { get; set; } = new List<string>();
     }
 }

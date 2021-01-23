@@ -48,24 +48,65 @@ namespace DemoPollApp.Helpers
             Console.WriteLine();
             foreach(var p in polls)
             {
-                ConsoleHelper.ColorWrite(ConsoleColor.Green, $"Poll: ");
+                ConsoleHelper.ColorWrite(ConsoleColor.Green, $"Poll Name: ");
                 Console.WriteLine($"{p.Name}");
 
-                Console.Write("Options: ");
-                foreach(var o in p.Options)
+                ConsoleHelper.ColorWrite(ConsoleColor.Green, $"Poll Question: ");
+                Console.WriteLine($"{p.Question}");
+
+                ConsoleHelper.ColorWrite(ConsoleColor.Green, $"Options: ");
+                StringBuilder sb = new StringBuilder();
+                foreach (var o in p.Options)
                 {
-                    Console.Write($"{o}, ");
+                    sb.Append($"{o}, ");
                 }
+                sb.Remove(sb.Length - 2, 2);
+                Console.WriteLine(sb);
+
+                Console.WriteLine();
+                Console.WriteLine();
+            }
+        }
+
+        public async static Task CreatePollFromConsoleInput(HttpClient client, string context, string userName)
+        {
+            Poll poll = new Poll();
+
+            Console.WriteLine();
+            Console.Write("Poll Name: ");
+            poll.Name = Console.ReadLine();
+
+            Console.Write("Poll Question: ");
+            poll.Question = Console.ReadLine();
+
+            var moreOptions = true;
+            while(moreOptions)
+            {
+                Console.Write("Poll Option: ");
+                poll.Options.Add(Console.ReadLine());
+
+                Console.WriteLine();
+                Console.Write("Another Option (y/N): ");
+                var another = Console.ReadLine();
+
+                moreOptions = another.ToUpper().StartsWith('Y');
+            }
+
+            Console.Write("Create poll? (y/N): ");
+            var create = Console.ReadLine().ToUpper().StartsWith('Y');
+
+            Console.WriteLine();
+            if (create)
+            {
+                HttpResponseMessage response = await client.PostAsJsonAsync($"api/Polls?context={context}&username={userName}", poll);
+                Console.WriteLine($"Response Status Code: {response.StatusCode}");
+            }
+            else
+            {
+                ConsoleHelper.ColorWriteLine(ConsoleColor.Red, "Not creating poll.");
             }
 
             Console.WriteLine();
-            Console.WriteLine();
-        }
-
-        public async static Task CreatePollFromConsoleInput(HttpClient client, string context)
-        {
-            Console.WriteLine();
-            Console.WriteLine("Poll");
         }
     }
 }
