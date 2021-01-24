@@ -28,6 +28,7 @@ using PollApi.Helpers;
 using PollApi.Models;
 using PollLibrary.DataAccess;
 using PollLibrary.Models;
+using System;
 using System.Threading.Tasks;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -44,7 +45,7 @@ namespace PollApi.Controllers
         private readonly IUserData userData;
         private readonly Mapper mapper = Mapper.Instance;
 
-        public VoteController(IContextData contextData, 
+        public VoteController(IContextData contextData,
             IPollData pollData,
             IVoteData voteData,
             IUserData userData)
@@ -55,31 +56,24 @@ namespace PollApi.Controllers
             this.userData = userData;
         }
 
-        // GET: api/<VoteController>
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
-
         // GET api/<VoteController>/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<VoteDTO>> GetById(int id, [FromQuery]string context)
+        public async Task<ActionResult<VoteDTO>> GetById(int id, [FromQuery] string context)
         {
             if (!await contextData.IsValidContext(context))
             {
-                return Unauthorized();
+                return Unauthorized(new ErrorResponse { ErrorMessage = "Context is not valid" });
             }
 
             var vote = await voteData.GetById(id);
             if (vote == null)
             {
-                return NotFound();
+                return NotFound(new ErrorResponse { ErrorMessage = $"Unable to find poll with id {id}." });
             }
 
             if (vote.Poll.Context.Name != context)
             {
-                return Unauthorized();
+                return Unauthorized(new ErrorResponse { ErrorMessage = $"Context is not valid for id {id}" });
             }
 
             return mapper.Map<Vote, VoteDTO>(vote);
@@ -87,19 +81,24 @@ namespace PollApi.Controllers
 
         // POST api/<VoteController>
         [HttpPost]
-        public async Task<ActionResult<VoteDTO>> Post([FromBody] VoteDTO vote, [FromQuery]string userName, string context)
+        public async Task<ActionResult<VoteDTO>> Post([FromBody] VoteDTO vote, [FromQuery] string userName, string context)
         {
             var poll = await pollData.GetPollByName(vote.PollName, context);
             var ctx = await contextData.GetContext(context);
 
             if (poll == null)
             {
-                return NotFound();
+                return NotFound(new ErrorResponse { ErrorMessage = $"Unable to find poll {vote.PollName}." });
             }
 
             if (ctx == null || poll.Context.Name != ctx.Name || userName == null)
             {
-                return Unauthorized();
+                return Unauthorized(new ErrorResponse { ErrorMessage = $"Context is not valid for poll {vote.PollName}" });
+            }
+
+            if (userName == null)
+            {
+                return Unauthorized(new ErrorResponse { ErrorMessage = $"A username must be provided" });
             }
 
             var newVote = new Vote()
@@ -109,27 +108,17 @@ namespace PollApi.Controllers
                 Poll = poll
             };
 
-            var success = await pollData.AddVote(poll, newVote);
+            try
             {
-                if(success == null)
-                {
-                    return BadRequest();
-                }
+                var success = await pollData.AddVote(poll, newVote);
             }
+            catch (Exception e)
+            {
+                return BadRequest(new ErrorResponse { ErrorMessage = e.Message });
+            }
+
 
             return CreatedAtAction(nameof(GetById), new { id = newVote.Id }, mapper.Map<Vote, VoteDTO>(newVote));
         }
-
-        // PUT api/<VoteController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
-
-        // DELETE api/<VoteController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
     }
 }

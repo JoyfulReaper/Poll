@@ -24,9 +24,9 @@ SOFTWARE.
 */
 
 using Microsoft.AspNetCore.Mvc;
+using PollApi.Models;
 using PollLibrary.DataAccess;
 using PollLibrary.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -48,31 +48,24 @@ namespace PollApi.Controllers
             this.contextData = contextData;
         }
 
-        // GET: api/<ResultsController>
-        //[HttpGet]
-        //public IEnumerable<string> Get()
-        //{
-        //    return new string[] { "value1", "value2" };
-        //}
-
         // GET api/<ResultsController>/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Result>> GetById(int id, [FromQuery]string context)
         {
             if(!await contextData.IsValidContext(context))
             {
-                return Unauthorized();
+                return Unauthorized(new ErrorResponse { ErrorMessage = "Context is not valid" });
             }
 
             Poll poll = await pollData.GetPollById(id, context);
             if(poll == null)
             {
-                return NotFound();
+                return NotFound(new ErrorResponse { ErrorMessage = $"Unable to find poll with id {id}." });
             }
 
             if(poll.Context.Name != context)
             {
-                return Unauthorized();
+                return Unauthorized(new ErrorResponse { ErrorMessage = $"Context is not valid for id {id}" });
             }
 
             Result res = await pollData.GetResults(poll);
@@ -85,41 +78,23 @@ namespace PollApi.Controllers
         {
             if (!await contextData.IsValidContext(context))
             {
-                return Unauthorized();
+                return Unauthorized(new ErrorResponse { ErrorMessage = "Context is not valid" });
             }
 
             Poll poll = await pollData.GetPollByName(name, context);
             if (poll == null)
             {
-                return NotFound();
+                return NotFound(new ErrorResponse { ErrorMessage = $"Unable to find poll {name}." });
             }
 
             if (poll.Context.Name != context)
             {
-                return Unauthorized();
+                return Unauthorized(new ErrorResponse { ErrorMessage = $"Context is not valid for poll {name}" });
             }
 
             Result res = await pollData.GetResults(poll);
 
             return res;
         }
-
-        // POST api/<ResultsController>
-        //[HttpPost]
-        //public void Post([FromBody] string value)
-        //{
-        //}
-
-        // PUT api/<ResultsController>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody] string value)
-        //{
-        //}
-
-        // DELETE api/<ResultsController>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
     }
 }

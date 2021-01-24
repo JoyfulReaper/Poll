@@ -61,7 +61,7 @@ namespace PollApi.Controllers
         {
             if (!await contextData.IsValidContext(context))
             {
-                return Unauthorized();
+                return Unauthorized(new ErrorResponse { ErrorMessage = "Context is not valid" });
             }
 
             var polls = await pollData.GetPollsByContext(context);
@@ -80,18 +80,18 @@ namespace PollApi.Controllers
         {
             if (!await contextData.IsValidContext(context))
             {
-                return Unauthorized();
+                return Unauthorized(new ErrorResponse { ErrorMessage = "Context is not valid" });
             }
 
             var poll = await pollData.GetPollByName(name, context);
             if(poll == null)
             {
-                return NotFound();
+                return NotFound(new ErrorResponse { ErrorMessage = $"Unable to find poll {name}." });
             }
 
             if(poll.Context.Name != context)
             {
-                return Unauthorized();
+                return Unauthorized(new ErrorResponse { ErrorMessage = $"Context is not valid for {name}" });
             }
 
             return mapper.Map<Poll, PollDTO>(poll);
@@ -103,18 +103,18 @@ namespace PollApi.Controllers
         {
             if (!await contextData.IsValidContext(context))
             {
-                return Unauthorized();
+                return Unauthorized(new ErrorResponse { ErrorMessage = "Context is not valid" });
             }
 
             var poll = await pollData.GetPollById(id, context);
             if (poll == null)
             {
-                return NotFound();
+                return NotFound(new ErrorResponse { ErrorMessage = $"Unable to find poll with id {id}." });
             }
 
             if (poll.Context.Name != context)
             {
-                return Unauthorized();
+                return Unauthorized(new ErrorResponse { ErrorMessage = $"Context is not valid for id {id}" });
             }
 
             return mapper.Map<Poll, PollDTO>(poll);
@@ -132,7 +132,7 @@ namespace PollApi.Controllers
             var contextDB = await contextData.GetContext(context);
             if (contextDB == null || username == null)
             {
-                return Unauthorized();
+                return Unauthorized(new ErrorResponse { ErrorMessage = $"{(contextDB == null ? "Context" : "Username")} is not valid" });
             }
 
             var options = new List<Option>();
@@ -175,18 +175,18 @@ namespace PollApi.Controllers
         {
             if (!await contextData.IsValidContext(context))
             {
-                return Unauthorized();
+                return Unauthorized(new ErrorResponse { ErrorMessage = "Context is not valid" });
             }
 
             var poll = await pollData.GetPollById(id,context);
             if (poll == null)
             {
-                return NotFound();
+                return NotFound(new ErrorResponse { ErrorMessage = $"Unable to find poll with id {id}." });
             }
 
             await pollData.RemovePoll(poll);
 
-            return Accepted();
+            return Ok(new { Message = $"Successfully deleted {id}" });
         }
     }
 }

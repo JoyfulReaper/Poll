@@ -129,7 +129,7 @@ namespace PollLibrary.DataAccess
             var alreadyVoted = await dbContext.Votes.AnyAsync(x => x.User.Id == userDB.Id && x.Poll.Id == pollDB.Id);
             if (alreadyVoted)
             {
-                throw new ArgumentException("User has already voted", nameof(vote));
+                throw new InvalidOperationException("User has already voted");
             }
 
             vote.Option = option;
