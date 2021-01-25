@@ -24,12 +24,25 @@ SOFTWARE.
 */
 
 using PollLibrary.Models;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PollLibrary.DataAccess
 {
     public interface IVoteData
     {
+        /// <summary>
+        /// Retreive a vote from the database by row id
+        /// </summary>
+        /// <param name="id">The id for the vote to retreive</param>
+        /// <returns>The vote with the given id</returns>
         Task<Vote> GetById(long id);
+
+        /// <summary>
+        /// Reterive a list of votes for the given poll
+        /// </summary>
+        /// <param name="poll">The poll to reterive the votes for</param>
+        /// <returns>A list of votes for the given poll</returns>
+        Task<List<Vote>> GetByPoll(Poll poll);
     }
 }

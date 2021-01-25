@@ -23,6 +23,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+// NOTE: Currently the context must be added to the database manually and acts
+// as a sort of password and filter on the polls.
+
 using PollLibrary.Models;
 using System.Threading.Tasks;
 
@@ -30,7 +33,18 @@ namespace PollLibrary.DataAccess
 {
     public interface IContextData
     {
+        /// <summary>
+        /// Reterive the context from the dtabase by name
+        /// </summary>
+        /// <param name="name">The context's name</param>
+        /// <returns></returns>
         Task<Context> GetContext(string name);
+
+        /// <summary>
+        /// Check if a context exists
+        /// </summary>
+        /// <param name="name">The name of the context to validate</param>
+        /// <returns></returns>
         Task<bool> IsValidContext(string name);
     }
 }

@@ -30,9 +30,31 @@ namespace PollLibrary.DataAccess
 {
     public interface IUserData
     {
+        /// <summary>
+        /// Add a user to the database.
+        /// </summary>
+        /// <param name="userName">The username to add</param>
+        /// <returns>The user that was added to the database</returns>
         Task<User> AddUser(string userName);
+
+        /// <summary>
+        /// Check to see if the given user is in the database
+        /// </summary>
+        /// <param name="userName">username to check for validitity</param>
+        /// <returns>true if the user exists, false otherwise</returns>
         Task<bool> IsValid(string userName);
+
+        /// <summary>
+        /// Remove the given user from the database
+        /// </summary>
+        /// <param name="userName">The user to remove</param>
         Task RemoveUser(string userName);
+
+        /// <summary>
+        /// Reterive a user from the database
+        /// </summary>
+        /// <param name="userName">the user to reterive</param>
+        /// <returns>The requested user or null</returns>
         Task<User> GetUser(string userName);
     }
 }
