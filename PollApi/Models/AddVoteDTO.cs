@@ -25,10 +25,11 @@ SOFTWARE.
 
 namespace PollApi.Models
 {
-    public class VoteDTO
+    public class AddVoteDTO
     {
         public string PollName { get; set; }
         public string UserName { get; set; }
+        public string Context { get; set; }
         public string Option { get; set; }
     }
 }

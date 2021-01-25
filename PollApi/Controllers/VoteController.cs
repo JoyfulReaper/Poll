@@ -81,29 +81,29 @@ namespace PollApi.Controllers
 
         // POST api/<VoteController>
         [HttpPost]
-        public async Task<ActionResult<VoteDTO>> Post([FromBody] VoteDTO vote, [FromQuery] string userName, string context)
+        public async Task<ActionResult<VoteDTO>> Post([FromBody] AddVoteDTO vote)
         {
-            var poll = await pollData.GetPollByName(vote.PollName, context);
-            var ctx = await contextData.GetContext(context);
+            var poll = await pollData.GetPollByName(vote.PollName, vote.Context);
+            var ctx = await contextData.GetContext(vote.Context);
 
             if (poll == null)
             {
                 return NotFound(new ErrorResponse { ErrorMessage = $"Unable to find poll {vote.PollName}." });
             }
 
-            if (ctx == null || poll.Context.Name != ctx.Name || userName == null)
+            if (ctx == null || poll.Context.Name != ctx.Name || vote.UserName == null)
             {
                 return Unauthorized(new ErrorResponse { ErrorMessage = $"Context is not valid for poll {vote.PollName}" });
             }
 
-            if (userName == null)
+            if (vote.UserName == null)
             {
                 return Unauthorized(new ErrorResponse { ErrorMessage = $"A username must be provided" });
             }
 
             var newVote = new Vote()
             {
-                User = new User() { UserName = userName },
+                User = new User() { UserName = vote.UserName },
                 Option = new Option() { Name = vote.Option },
                 Poll = poll
             };

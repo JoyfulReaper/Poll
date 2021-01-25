@@ -135,7 +135,7 @@ namespace PollApi
             mapper.Register<Vote, VoteDTO>(x => new VoteDTO()
             {
                 PollName = x.Poll.Name,
-                //UserName = x.User.UserName,
+                UserName = x.User.UserName,
                 Option = x.Option.Name
             });
         }
