@@ -54,6 +54,9 @@ namespace DemoPollApp.Helpers
 
             var validOption = true;
             Vote vote = new Vote();
+            vote.UserName = username;
+            vote.Context = context;
+
             do {
                 validOption = true;
                 Console.WriteLine();
@@ -72,7 +75,7 @@ namespace DemoPollApp.Helpers
             vote.PollName = poll.Name;
 
             Console.WriteLine();
-            ConsoleHelper.ColorWriteLine(ConsoleColor.Yellow, $"Status code {await APIHelper.VoteOnPoll(vote, context, username)}");
+            ConsoleHelper.ColorWriteLine(ConsoleColor.Yellow, $"Status code {await APIHelper.VoteOnPoll(vote)}");
             Console.WriteLine();
         }
     }

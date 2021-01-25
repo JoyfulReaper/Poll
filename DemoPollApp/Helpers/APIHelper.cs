@@ -29,7 +29,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DemoPollApp.Helpers
@@ -49,7 +48,7 @@ namespace DemoPollApp.Helpers
         public async static Task<Poll> GetPoll(string name, string context)
         {
             Poll poll = null;
-            HttpResponseMessage response = await client.GetAsync($"/api/Polls/{name}?context={context}");
+            HttpResponseMessage response = await client.GetAsync($"api/Polls/{name}?context={context}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -66,7 +65,7 @@ namespace DemoPollApp.Helpers
         public async static Task<List<Poll>> GetAllPolls(string context)
         {
             List<Poll> polls = new List<Poll>();
-            HttpResponseMessage response = await client.GetAsync($"/api/Polls?context={context}");
+            HttpResponseMessage response = await client.GetAsync($"api/Polls?context={context}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -99,9 +98,9 @@ namespace DemoPollApp.Helpers
             return results;
         }
 
-        public async static Task<HttpStatusCode> VoteOnPoll(Vote vote, string context, string username)
+        public async static Task<HttpStatusCode> VoteOnPoll(Vote vote)
         {
-            HttpResponseMessage response = await client.PostAsJsonAsync($"api/Vote?context={context}&username={username}", vote);
+            HttpResponseMessage response = await client.PostAsJsonAsync($"api/Vote", vote);
             if(!response.IsSuccessStatusCode)
             {
                 throw new Exception($"Unable to save vote: {response.StatusCode} Message: {await response.Content.ReadAsStringAsync()}");

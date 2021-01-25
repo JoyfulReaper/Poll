@@ -29,5 +29,7 @@ namespace DemoPollApp.Models
     {
         public string PollName { get; set; }
         public string Option { get; set; }
+        public string UserName { get; set; }
+        public string Context { get; set; }
     }
 }
