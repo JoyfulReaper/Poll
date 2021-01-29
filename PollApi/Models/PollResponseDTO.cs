@@ -27,11 +27,11 @@ using System.Collections.Generic;
 
 namespace PollApi.Models
 {
-    public class PollDTO
+    public class PollResponseDTO
     {
+        public long Id { get; set; }
         public string Name { get; set; }
         public string Question { get; set; }
-        public string Context { get; set; }
         public string UserName { get; set; }
         public ICollection<string> Options { get; set; }
     }

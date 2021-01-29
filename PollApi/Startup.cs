@@ -117,10 +117,35 @@ namespace PollApi
 
                 return new PollDTO()
                 {
+                    Name = x.Name,
+                    Options = options,
+                    Question = x.Question,
+                    Context = x.Context.Name,
+                    UserName = x.CreatingUser.UserName
+                };
+            });
+
+            mapper.Register<Poll, PollResponseDTO>(x =>
+            {
+                List<string> options = new List<string>();
+                List<VoteDTO> votes = new List<VoteDTO>();
+
+                if (x.Options != null)
+                {
+                    x.Options.ToList().ForEach(x => options.Add(x.Name));
+                }
+                if (x.Votes != null)
+                {
+                    x.Votes.ToList().ForEach(x => votes.Add(mapper.Map<Vote, VoteDTO>(x)));
+                }
+
+                return new PollResponseDTO()
+                {
                     Id = x.Id,
                     Name = x.Name,
                     Options = options,
-                    Question = x.Question
+                    Question = x.Question,
+                    UserName = x.CreatingUser.UserName
                 };
             });
 

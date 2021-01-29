@@ -57,7 +57,7 @@ namespace PollApi.Controllers
         /// <param name="context">The poll's context</param>
         /// <returns>All polls in the given contexy</returns>
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PollDTO>>> GetAll([FromQuery] string context)
+        public async Task<ActionResult<IEnumerable<PollResponseDTO>>> GetAll([FromQuery] string context)
         {
             if (!await contextData.IsValidContext(context))
             {
@@ -65,7 +65,7 @@ namespace PollApi.Controllers
             }
 
             var polls = await pollData.GetPollsByContext(context);
-            return polls.Select(x => mapper.Map<Poll, PollDTO>(x)).ToList();
+            return polls.Select(x => mapper.Map<Poll, PollResponseDTO>(x)).ToList();
         }
 
 
@@ -76,7 +76,7 @@ namespace PollApi.Controllers
         /// <param name="name">The name of the poll</param>
         /// <returns></returns>
         [HttpGet("{name}")]
-        public async Task<ActionResult<PollDTO>> GetByName([FromQuery]string context, string name)
+        public async Task<ActionResult<PollResponseDTO>> GetByName([FromQuery]string context, string name)
         {
             if (!await contextData.IsValidContext(context))
             {
@@ -94,12 +94,12 @@ namespace PollApi.Controllers
                 return Unauthorized(new ErrorResponse { ErrorMessage = $"Context is not valid for {name}" });
             }
 
-            return mapper.Map<Poll, PollDTO>(poll);
+            return mapper.Map<Poll, PollResponseDTO>(poll);
         }
 
         // GET api/<PollController>/5 (X)
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<PollDTO>> GetById(int id, [FromQuery]string context)
+        public async Task<ActionResult<PollResponseDTO>> GetById(int id, [FromQuery]string context)
         {
             if (!await contextData.IsValidContext(context))
             {
@@ -117,20 +117,20 @@ namespace PollApi.Controllers
                 return Unauthorized(new ErrorResponse { ErrorMessage = $"Context is not valid for id {id}" });
             }
 
-            return mapper.Map<Poll, PollDTO>(poll);
+            return mapper.Map<Poll, PollResponseDTO>(poll);
         }
 
         // POST api/<PollController> (X)
         [HttpPost]
-        public async Task<ActionResult<PollDTO>> Post([FromBody] PollDTO poll, [FromQuery] string context, [FromQuery] string username)
+        public async Task<ActionResult<PollDTO>> Post([FromBody] PollDTO poll)
         {
             if(poll == null || string.IsNullOrEmpty(poll.Name) || string.IsNullOrEmpty(poll.Question) || poll.Options == null)
             {
                 BadRequest("Poll failed validation");
             }
 
-            var contextDB = await contextData.GetContext(context);
-            if (contextDB == null || username == null)
+            var contextDB = await contextData.GetContext(poll.Context);
+            if (contextDB == null || string.IsNullOrEmpty(poll.UserName))
             {
                 return Unauthorized(new ErrorResponse { ErrorMessage = $"{(contextDB == null ? "Context" : "Username")} is not valid" });
             }
@@ -141,11 +141,11 @@ namespace PollApi.Controllers
                 options.Add(new Option { Name = option });
             }
 
-            var user = await userData.GetUser(username);
+            var user = await userData.GetUser(poll.UserName);
             if(user == null)
             {
                 user = new User()
-                { UserName = username };
+                { UserName = poll.UserName };
             }
 
             var newPoll = new Poll()
@@ -160,7 +160,7 @@ namespace PollApi.Controllers
 
             await pollData.AddPoll(newPoll);
 
-            return CreatedAtAction(nameof(GetAll), mapper.Map<Poll, PollDTO>(newPoll));
+            return CreatedAtAction(nameof(GetAll), mapper.Map<Poll, PollResponseDTO>(newPoll));
         }
 
         // PUT api/<PollController>/5   (Not used at the moment)
