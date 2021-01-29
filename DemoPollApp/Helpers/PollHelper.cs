@@ -26,9 +26,6 @@ SOFTWARE.
 
 using DemoPollApp.Models;
 using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -41,8 +38,19 @@ namespace DemoPollApp.Helpers
             var polls = await  APIHelper.GetAllPolls(context);
 
             Console.WriteLine();
+
+            var currentIndex = 0;
             foreach(var p in polls)
             {
+                if(currentIndex % 3 == 0 && currentIndex != 0)
+                {
+                    Console.WriteLine("Press enter for next page.");
+                    Console.ReadLine();
+                }
+
+                ConsoleHelper.ColorWrite(ConsoleColor.Green, $"Poll Id: ");
+                Console.WriteLine($"{p.Id}");
+
                 ConsoleHelper.ColorWrite(ConsoleColor.Green, $"Poll Name: ");
                 Console.WriteLine($"{p.Name}");
 
@@ -58,12 +66,16 @@ namespace DemoPollApp.Helpers
                 sb.Remove(sb.Length - 2, 2);
                 Console.WriteLine(sb);
                 Console.WriteLine();
+
+                currentIndex++;
             }
         }
 
-        public async static Task CreatePollFromConsoleInput(string context, string userName)
+        public async static Task CreatePollOnConsole(string context, string userName)
         {
             Poll poll = new Poll();
+            poll.Context = context;
+            poll.UserName = userName;
 
             Console.WriteLine();
             Console.Write("Poll Name: ");
@@ -98,6 +110,25 @@ namespace DemoPollApp.Helpers
                 ConsoleHelper.ColorWriteLine(ConsoleColor.Red, "Not creating poll.");
             }
 
+            Console.WriteLine();
+        }
+
+        public async static Task DeletePollOnConsole(string context)
+        {
+            Console.WriteLine();
+            var idToDelete = ConsoleHelper.GetValidInt("Please enter the Id of the poll to delete: ", 0, int.MaxValue);
+
+            Console.WriteLine();
+            Console.Write("Confirm Deletion? (y/N): ");
+            var delete = Console.ReadLine();
+
+            if( !delete.ToUpper().StartsWith('Y'))
+            {
+                return;
+            }
+
+            var status = await APIHelper.DeletePoll(idToDelete, context);
+            ConsoleHelper.ColorWriteLine(ConsoleColor.Yellow, $"Response Status Code: {status}");
             Console.WriteLine();
         }
     }

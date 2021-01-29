@@ -34,7 +34,7 @@ using System.Threading.Tasks;
 
 namespace DemoPollApp
 {
-    public enum Option { Quit, ChangeUser, ListPolls, CreatePoll, VoteOnPoll, PollResults, Invalid };
+    public enum Option { Quit, ChangeUser, ListPolls, CreatePoll, VoteOnPoll, PollResults, DeletePoll, Invalid };
 
     class Program
     {
@@ -58,6 +58,7 @@ namespace DemoPollApp
                 Console.WriteLine("3.) Create Poll");
                 Console.WriteLine("4.) Vote on Poll");
                 Console.WriteLine("5.) Poll Results");
+                Console.WriteLine("6.) Delete Poll");
 
                 Console.WriteLine();
                 Console.Write("Option: ");
@@ -101,7 +102,7 @@ namespace DemoPollApp
                         }
                     case Option.CreatePoll:
                         {
-                            await PollHelper.CreatePollFromConsoleInput(context, userName);
+                            await PollHelper.CreatePollOnConsole(context, userName);
                             break;
                         }
                     case Option.ListPolls:
@@ -117,6 +118,11 @@ namespace DemoPollApp
                     case Option.VoteOnPoll:
                         {
                             await VoteHelper.VoteOnPollOnConsole(context, userName);
+                            break;
+                        }
+                    case Option.DeletePoll:
+                        {
+                            await PollHelper.DeletePollOnConsole(context);
                             break;
                         }
                     default:

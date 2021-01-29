@@ -32,6 +32,8 @@ namespace DemoPollApp.Models
         public long Id { get; set; }
         public string Name { get; set; }
         public string Question { get; set; }
+        public string Context { get; set; }
+        public string UserName { get; set; }
         public List<string> Options { get; set; } = new List<string>();
     }
 }

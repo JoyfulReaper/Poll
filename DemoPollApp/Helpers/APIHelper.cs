@@ -36,6 +36,7 @@ namespace DemoPollApp.Helpers
     public class APIHelper
     {
         private static HttpClient client = new HttpClient();
+        private static string path = "api";
 
         static APIHelper()
         {
@@ -45,10 +46,16 @@ namespace DemoPollApp.Helpers
                 new MediaTypeWithQualityHeaderValue("application/ajson"));
         }
 
+        public async static Task<HttpStatusCode> DeletePoll(long id, string context)
+        {
+            HttpResponseMessage response = await client.DeleteAsync($"{path}/Polls/{id}?context={context}");
+            return response.StatusCode;
+        }
+
         public async static Task<Poll> GetPoll(string name, string context)
         {
             Poll poll = null;
-            HttpResponseMessage response = await client.GetAsync($"api/Polls/{name}?context={context}");
+            HttpResponseMessage response = await client.GetAsync($"{path}/Polls/{name}?context={context}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -65,7 +72,7 @@ namespace DemoPollApp.Helpers
         public async static Task<List<Poll>> GetAllPolls(string context)
         {
             List<Poll> polls = new List<Poll>();
-            HttpResponseMessage response = await client.GetAsync($"api/Polls?context={context}");
+            HttpResponseMessage response = await client.GetAsync($"{path}/Polls?context={context}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -77,7 +84,7 @@ namespace DemoPollApp.Helpers
 
         public async static Task<HttpStatusCode> CreatePoll(Poll poll, string context, string userName)
         {
-            HttpResponseMessage response = await client.PostAsJsonAsync($"api/Polls?context={context}&username={userName}", poll);
+            HttpResponseMessage response = await client.PostAsJsonAsync($"{path}/Polls", poll);
             return response.StatusCode;
         }
 
@@ -85,7 +92,7 @@ namespace DemoPollApp.Helpers
         {
             Result results = null;
 
-            HttpResponseMessage response = await client.GetAsync($"api/Results/{pollName}?context={context}");
+            HttpResponseMessage response = await client.GetAsync($"{path}/Results/{pollName}?context={context}");
             if(response.IsSuccessStatusCode)
             {
                 results = await response.Content.ReadAsAsync<Result>();
@@ -100,7 +107,7 @@ namespace DemoPollApp.Helpers
 
         public async static Task<HttpStatusCode> VoteOnPoll(Vote vote)
         {
-            HttpResponseMessage response = await client.PostAsJsonAsync($"api/Vote", vote);
+            HttpResponseMessage response = await client.PostAsJsonAsync($"{path}/Vote", vote);
             if(!response.IsSuccessStatusCode)
             {
                 throw new Exception($"Unable to save vote: {response.StatusCode} Message: {await response.Content.ReadAsStringAsync()}");
