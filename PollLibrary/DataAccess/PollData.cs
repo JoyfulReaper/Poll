@@ -188,13 +188,15 @@ namespace PollLibrary.DataAccess
                 throw new ArgumentException("Context is not valid", nameof(context));
             }
 
-            return await dbContext.Polls
+            var res =  await dbContext.Polls
                 .Include(x => x.Options)
                 .Include(x => x.Votes)
                 .Include(x => x.Context)
                 .Include(x => x.CreatingUser)
                 .Where(x => x.Context == ctx)
                 .ToListAsync();
+
+            return res;
         }
     }
 }

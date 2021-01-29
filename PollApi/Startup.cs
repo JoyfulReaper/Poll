@@ -134,10 +134,6 @@ namespace PollApi
                 {
                     x.Options.ToList().ForEach(x => options.Add(x.Name));
                 }
-                if (x.Votes != null)
-                {
-                    x.Votes.ToList().ForEach(x => votes.Add(mapper.Map<Vote, VoteDTO>(x)));
-                }
 
                 return new PollResponseDTO()
                 {
