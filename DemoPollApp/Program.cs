@@ -39,7 +39,7 @@ namespace DemoPollApp
     class Program
     {
         // Configuration Options
-        private static string context = "testing"; // Set the poll context 
+        private static readonly string context = "testing"; // Set the poll context 
 
         private static string userName = "testUser";
 

@@ -103,7 +103,7 @@ namespace DemoPollApp.Helpers
             Console.WriteLine();
             if (create)
             {
-                ConsoleHelper.ColorWriteLine(ConsoleColor.Yellow, $"Response Status Code: {await APIHelper.CreatePoll(poll, context, userName)}");
+                ConsoleHelper.ColorWriteLine(ConsoleColor.Yellow, $"Response Status Code: {await APIHelper.CreatePoll(poll)}");
             }
             else
             {

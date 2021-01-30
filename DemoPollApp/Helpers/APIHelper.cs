@@ -35,12 +35,12 @@ namespace DemoPollApp.Helpers
 {
     public class APIHelper
     {
-        private static HttpClient client = new HttpClient();
-        private static string path = "api";
+        private static readonly HttpClient client = new HttpClient();
+        private static readonly string path = "api";
 
         static APIHelper()
         {
-            client.BaseAddress = new Uri("http://localhost:8080");
+            client.BaseAddress = new Uri("https://localhost:44316");
             client.DefaultRequestHeaders.Accept.Clear();
             client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/ajson"));
@@ -82,7 +82,7 @@ namespace DemoPollApp.Helpers
             return polls;
         }
 
-        public async static Task<HttpStatusCode> CreatePoll(Poll poll, string context, string userName)
+        public async static Task<HttpStatusCode> CreatePoll(Poll poll)
         {
             HttpResponseMessage response = await client.PostAsJsonAsync($"{path}/Polls", poll);
             return response.StatusCode;
