@@ -141,11 +141,14 @@ namespace PollApi.Controllers
                 options.Add(new Option { Name = option });
             }
 
-            var user = await userData.GetUser(poll.UserName);
+            var user = await userData.GetUser(poll.UserName, poll.Context);
             if(user == null)
             {
                 user = new User()
-                { UserName = poll.UserName };
+                {
+                    UserName = poll.UserName,
+                    Context = contextDB
+                };
             }
 
             var newPoll = new Poll()

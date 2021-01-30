@@ -83,6 +83,12 @@ namespace PollLibrary.DataAccess
                 .HasOne(x => x.Poll)
                 .WithMany(x => x.Votes)
                 .IsRequired();
+
+            modelBuilder.Entity<User>()
+                .HasOne(x => x.Context)
+                .WithMany()
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

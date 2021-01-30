@@ -26,6 +26,7 @@ SOFTWARE.
 using Microsoft.EntityFrameworkCore;
 using PollLibrary.Models;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace PollLibrary.DataAccess
@@ -33,35 +34,51 @@ namespace PollLibrary.DataAccess
     public class UserData : IUserData
     {
         private readonly PollContext dbContext;
+        private readonly IContextData contextData;
 
-        public UserData(PollContext dbContext)
+        public UserData(PollContext dbContext, IContextData contextData)
         {
             this.dbContext = dbContext;
+            this.contextData = contextData;
         }
 
-        public async Task<User> AddUser(string userName)
+        public async Task<User> AddUser(string userName, string context)
         {
-            var user = await dbContext.AddAsync(new User() { UserName = userName });
+            var contextDb = await contextData.GetContext(context);
+
+            if (contextDb == null)
+            {
+                throw new ArgumentException("Context is not valid", nameof(context));
+            }
+
+            var user = await dbContext.AddAsync(new User() 
+            { 
+                UserName = userName,
+                Context = contextDb
+            }
+            );;
             await dbContext.SaveChangesAsync();
 
             return user.Entity;
         }
 
-        public async Task<User> GetUser(string userName)
+        public async Task<User> GetUser(string userName, string context)
         {
-            return await dbContext.Users.SingleOrDefaultAsync(x => x.UserName == userName);
+            return await dbContext.Users
+                .Where(x => x.Context.Name == context)
+                .SingleOrDefaultAsync(x => x.UserName == userName);
         }
 
-        public async Task<bool> IsValid(string userName)
+        public async Task<bool> IsValid(string userName, string context)
         {
-            var user = await GetUser(userName);
+            var user = await GetUser(userName, context);
 
             return user != null;
         }
 
-        public async Task RemoveUser(string userName)
+        public async Task RemoveUser(string userName, string context)
         {
-            var user = await GetUser(userName);
+            var user = await GetUser(userName, context);
 
             if(user == null)
             {

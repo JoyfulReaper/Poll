@@ -2,7 +2,7 @@
 
 namespace PollLibrary.Migrations
 {
-    public partial class InitialDB : Migration
+    public partial class InitialDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -25,11 +25,17 @@ namespace PollLibrary.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    UserName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    ContextId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Users_Context_ContextId",
+                        column: x => x.ContextId,
+                        principalTable: "Context",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -133,6 +139,11 @@ namespace PollLibrary.Migrations
                 column: "CreatingUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Users_ContextId",
+                table: "Users",
+                column: "ContextId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_UserName",
                 table: "Users",
                 column: "UserName",
@@ -166,10 +177,10 @@ namespace PollLibrary.Migrations
                 name: "Polls");
 
             migrationBuilder.DropTable(
-                name: "Context");
+                name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Context");
         }
     }
 }

@@ -81,6 +81,13 @@ namespace PollLibrary.DataAccess
                 throw new ArgumentException("Poll already exists");
             }
 
+            var userDb = await userData.GetUser(poll.CreatingUser.UserName, poll.Context.Name);
+            if(userDb == null)
+            {
+                userDb = await userData.AddUser(poll.CreatingUser.UserName, poll.Context.Name);
+                poll.CreatingUser = userDb;
+            }
+
             var hs = new HashSet<string>();
             bool allUnique = poll.Options.All(x => hs.Add(x.Name.ToUpperInvariant()));
             if(!allUnique)
@@ -107,7 +114,7 @@ namespace PollLibrary.DataAccess
                 throw new Exception("Username cannot be null or empty!");
             }
 
-            var userDB = await userData.GetUser(vote.User.UserName);
+            var userDB = await userData.GetUser(vote.User.UserName, poll.Context.Name);
             var pollDB = await GetPollByName(poll.Name, poll.Context.Name);
 
             var options = await dbContext.Options
@@ -123,7 +130,8 @@ namespace PollLibrary.DataAccess
 
             if(userDB == null)
             {
-                userDB = await userData.AddUser(vote.User.UserName);
+                vote.User.Context = poll.Context;
+                userDB = await userData.AddUser(vote.User.UserName, poll.Context.Name);
             }
 
             var alreadyVoted = await dbContext.Votes.AnyAsync(x => x.User.Id == userDB.Id && x.Poll.Id == pollDB.Id);

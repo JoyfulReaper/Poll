@@ -39,5 +39,8 @@ namespace PollLibrary.Models
         [Required]
         [MaxLength(100)]
         public string UserName { get; set; }
+
+        [Required]
+        public Context Context { get; set; }
     }
 }
