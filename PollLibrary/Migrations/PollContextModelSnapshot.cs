@@ -26,14 +26,10 @@ namespace PollLibrary.Migrations
                         .UseIdentityColumn();
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Name")
-                        .IsUnique();
 
                     b.ToTable("Context");
                 });
@@ -46,9 +42,8 @@ namespace PollLibrary.Migrations
                         .UseIdentityColumn();
 
                     b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<long>("PollId")
                         .HasColumnType("bigint");
@@ -103,16 +98,12 @@ namespace PollLibrary.Migrations
                         .HasColumnType("bigint");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ContextId");
-
-                    b.HasIndex("UserName")
-                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -158,7 +149,7 @@ namespace PollLibrary.Migrations
             modelBuilder.Entity("PollLibrary.Models.Poll", b =>
                 {
                     b.HasOne("PollLibrary.Models.Context", "Context")
-                        .WithMany()
+                        .WithMany("Polls")
                         .HasForeignKey("ContextId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -166,7 +157,7 @@ namespace PollLibrary.Migrations
                     b.HasOne("PollLibrary.Models.User", "CreatingUser")
                         .WithMany()
                         .HasForeignKey("CreatingUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Context");
@@ -177,9 +168,9 @@ namespace PollLibrary.Migrations
             modelBuilder.Entity("PollLibrary.Models.User", b =>
                 {
                     b.HasOne("PollLibrary.Models.Context", "Context")
-                        .WithMany()
+                        .WithMany("Users")
                         .HasForeignKey("ContextId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Context");
@@ -188,7 +179,7 @@ namespace PollLibrary.Migrations
             modelBuilder.Entity("PollLibrary.Models.Vote", b =>
                 {
                     b.HasOne("PollLibrary.Models.Option", "Option")
-                        .WithMany()
+                        .WithMany("Votes")
                         .HasForeignKey("OptionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -200,7 +191,7 @@ namespace PollLibrary.Migrations
                         .IsRequired();
 
                     b.HasOne("PollLibrary.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Votes")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
@@ -212,10 +203,27 @@ namespace PollLibrary.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("PollLibrary.Models.Context", b =>
+                {
+                    b.Navigation("Polls");
+
+                    b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("PollLibrary.Models.Option", b =>
+                {
+                    b.Navigation("Votes");
+                });
+
             modelBuilder.Entity("PollLibrary.Models.Poll", b =>
                 {
                     b.Navigation("Options");
 
+                    b.Navigation("Votes");
+                });
+
+            modelBuilder.Entity("PollLibrary.Models.User", b =>
+                {
                     b.Navigation("Votes");
                 });
 #pragma warning restore 612, 618

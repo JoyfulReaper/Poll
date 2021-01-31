@@ -12,7 +12,7 @@ namespace PollLibrary.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -25,7 +25,7 @@ namespace PollLibrary.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    UserName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     ContextId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -35,7 +35,8 @@ namespace PollLibrary.Migrations
                         name: "FK_Users_Context_ContextId",
                         column: x => x.ContextId,
                         principalTable: "Context",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -62,8 +63,7 @@ namespace PollLibrary.Migrations
                         name: "FK_Polls_Users_CreatingUserId",
                         column: x => x.CreatingUserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -72,7 +72,7 @@ namespace PollLibrary.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     PollId = table.Column<long>(type: "bigint", nullable: false)
                 },
                 constraints: table =>
@@ -118,12 +118,6 @@ namespace PollLibrary.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Context_Name",
-                table: "Context",
-                column: "Name",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Options_PollId",
                 table: "Options",
                 column: "PollId");
@@ -142,12 +136,6 @@ namespace PollLibrary.Migrations
                 name: "IX_Users_ContextId",
                 table: "Users",
                 column: "ContextId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_UserName",
-                table: "Users",
-                column: "UserName",
-                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Votes_OptionId",
