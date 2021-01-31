@@ -30,26 +30,34 @@ namespace PollLibrary.Models
 {
     public partial class Poll
     {
-        [Key]
+        //[Key]
         public long Id { get; set; }
 
-        [Required]
-        [MaxLength(20)]
+        //[Required]
+        //[MaxLength(20)]
         public string Name { get; set; }
 
-        [Required]
-        [MaxLength(100)]
+        //[Required]
+        //[MaxLength(100)]
         public string Question { get; set; }
 
-        [Required]
+        //[Required]
         public ICollection<Option> Options { get; set; }
 
         public ICollection<Vote> Votes { get; set; }
 
-        [Required]
+        //[Required]
+        public long ContextId { get; set; }
+
+        //[Required]
+        //[ForeignKey("ContextId")]
         public Context Context { get; set; }
 
-        [Required]
+        //[Required]
+        public long CreatingUserId { get; set; }
+
+        //[Required]
+        //[ForeignKey("CreatingUserId")]
         public User CreatingUser { get; set; }
     }
 }

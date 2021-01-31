@@ -24,21 +24,27 @@ SOFTWARE.
 */
 
 
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PollLibrary.Models
 {
     public partial class Option
     {
-        [Key]
+        //[Key]
         public long Id { get; set; }
 
-        [Required]
-        [MaxLength(100)]
+        //[Required]
+        //[MaxLength(100)]
         public string Name { get; set; }
 
-        [Required]
+        //[Required]
+        public long PollId { get; set; }
+
+        //[Required]
+        //[ForeignKey("PollId")]
         public Poll Poll { get; set; }
+
+        public ICollection<Vote> Votes { get; set; }
     }
 }

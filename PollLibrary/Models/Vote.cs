@@ -23,22 +23,33 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using System.ComponentModel.DataAnnotations;
 
 namespace PollLibrary.Models
 {
     public partial class Vote
     {
-        [Key]
+        //[Key]
         public long Id { get; set; }
 
-        [Required]
+        //[Required]
+        public long UserId { get; set; }
+
+        //[Required]
+        //[ForeignKey("UserId")]
         public User User { get; set; }
 
-        [Required]
+        //[Required]
+        public long OptionId { get; set; }
+
+        //[Required]
+        //[ForeignKey("OptionId")]
         public Option Option { get; set; }
 
-        [Required]
+        //[Required]
+        public long PollId { get; set; }
+
+        //[Required]
+        //[ForeignKey("PollId")]
         public Poll Poll { get; set; }
     }
 }

@@ -23,24 +23,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-using Microsoft.EntityFrameworkCore;
-using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PollLibrary.Models
 {
-    [Index(nameof(UserName), IsUnique =true)]
     public partial class User
     {
-        [Key]
+        //[Key]
         public long Id { get; set; }
 
-        [Required]
-        [MaxLength(100)]
+        //[Required]
+        //[MaxLength(100)]
         public string UserName { get; set; }
 
-        [Required]
+        //[Required]
+        public long ContextId { get; set; }
+
+        //[Required]
+        //[ForeignKey("ContextId")]
         public Context Context { get; set; }
+
+        public ICollection<Vote> Votes { get; set; }
     }
 }

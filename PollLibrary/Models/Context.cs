@@ -25,18 +25,24 @@ SOFTWARE.
 
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PollLibrary.Models
 {
-    [Index(nameof(Name), IsUnique = true)]
+    //[Index(nameof(Name), IsUnique = true)]
     public partial class Context
     {
-        [Key]
+        //[Key]
         public long Id { get; set; }
 
-        [Required]
-        [MaxLength(100)]
+        //[Required]
+        //[MaxLength(100)]
         public string Name { get; set; }
+
+        public ICollection<Poll> Polls { get; set; }
+
+        public ICollection<User> Users { get; set; }
     }
 }
