@@ -36,7 +36,8 @@ namespace PollLibrary.DataAccess
         private readonly PollContext dbContext;
         private readonly IContextData contextData;
 
-        public UserData(PollContext dbContext, IContextData contextData)
+        public UserData(PollContext dbContext,
+            IContextData contextData)
         {
             this.dbContext = dbContext;
             this.contextData = contextData;
@@ -45,21 +46,22 @@ namespace PollLibrary.DataAccess
         public async Task<User> AddUser(string userName, string context)
         {
             var contextDb = await contextData.GetContext(context);
-
             if (contextDb == null)
             {
                 throw new ArgumentException("Context is not valid", nameof(context));
             }
 
-            var user = await dbContext.AddAsync(new User() 
-            { 
+            var user = new User()
+            {
                 UserName = userName,
                 Context = contextDb
-            }
-            );;
+            };
+
+
+            await dbContext.AddAsync(user);
             await dbContext.SaveChangesAsync();
 
-            return user.Entity;
+            return user;
         }
 
         public async Task<User> GetUser(string userName, string context)

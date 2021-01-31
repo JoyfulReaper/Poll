@@ -75,6 +75,12 @@ namespace PollLibrary.DataAccess
 
         public async Task<Poll> AddPoll(Poll poll)
         {
+            var contextDB = await contextData.GetContext(poll.Context.Name);
+            if (contextDB == null)
+            {
+                throw new ArgumentException("Context is not valid");
+            }
+
             var pollExists = dbContext.Polls.Any(x => x.Name == poll.Name && x.Context.Id == poll.Context.Id);
             if (pollExists)
             {

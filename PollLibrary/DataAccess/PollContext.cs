@@ -44,51 +44,110 @@ namespace PollLibrary.DataAccess
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Poll>()
+                .HasKey(x => x.Id);
+
+            modelBuilder.Entity<Poll>()
+                .Property(x => x.Name).HasMaxLength(20)
+                .IsRequired();
+
+            modelBuilder.Entity<Poll>()
+                .Property(x => x.Question).HasMaxLength(100)
+                .IsRequired();
+
+            modelBuilder.Entity<Poll>()
                 .HasMany(x => x.Options)
                 .WithOne(x => x.Poll)
                 .IsRequired();
 
             modelBuilder.Entity<Poll>()
                 .HasMany(x => x.Votes)
-                .WithOne(x => x.Poll)
-                .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(x => x.Poll);
 
             modelBuilder.Entity<Poll>()
                  .HasOne(x => x.Context)
-                 .WithMany()
+                 .WithMany(x => x.Polls)
+                 .HasForeignKey(x => x.ContextId)
                  .IsRequired();
 
             modelBuilder.Entity<Poll>()
                 .HasOne(x => x.CreatingUser)
                 .WithMany()
-                .IsRequired();
+                .HasForeignKey(x => x.CreatingUserId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            ////////////////////////////////////////
+
+            modelBuilder.Entity<Option>()
+                .HasKey(x => x.Id);
+
+            modelBuilder.Entity<Option>()
+                .Property(x => x.Name).HasMaxLength(50);
 
             modelBuilder.Entity<Option>()
                 .HasOne(x => x.Poll)
                 .WithMany(x => x.Options)
+                .HasForeignKey(x => x.PollId)
                 .IsRequired();
+
+            ////////////////////////////////////////
+
+            modelBuilder.Entity<Vote>()
+                .HasKey(x => x.Id);
 
             modelBuilder.Entity<Vote>()
                 .HasOne(x => x.User)
-                .WithMany()
+                .WithMany(x => x.Votes)
                 .IsRequired()
+                .HasForeignKey(x => x.UserId)
                 .OnDelete(DeleteBehavior.NoAction);
 
             modelBuilder.Entity<Vote>()
                 .HasOne(x => x.Option)
-                .WithMany()
+                .WithMany(x => x.Votes)
+                .HasForeignKey(x => x.OptionId)
                 .IsRequired();
 
             modelBuilder.Entity<Vote>()
                 .HasOne(x => x.Poll)
                 .WithMany(x => x.Votes)
-                .IsRequired();
+                .HasForeignKey(x => x.PollId)
+                .IsRequired()
+                .OnDelete(DeleteBehavior.NoAction);
+
+            ////////////////////////////////////////
+
+            modelBuilder.Entity<User>()
+                .HasKey(x => x.Id);
+
+            modelBuilder.Entity<User>()
+                .Property(x => x.UserName).HasMaxLength(50);
 
             modelBuilder.Entity<User>()
                 .HasOne(x => x.Context)
-                .WithMany()
+                .WithMany(x => x.Users)
                 .IsRequired()
-                .OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey(x => x.ContextId);
+
+            modelBuilder.Entity<User>()
+                .HasMany(x => x.Votes)
+                .WithOne(x => x.User);
+
+            //////////////////////////////////////
+
+            modelBuilder.Entity<Context>()
+                .HasKey(x => x.Id);
+
+            modelBuilder.Entity<Context>()
+                .HasMany(x => x.Polls)
+                .WithOne(x => x.Context);
+
+            modelBuilder.Entity<Context>()
+                .HasMany(x => x.Users)
+                .WithOne(x => x.Context);
+
+            modelBuilder.Entity<Context>()
+                .Property(x => x.Name).HasMaxLength(50);
         }
     }
 }
